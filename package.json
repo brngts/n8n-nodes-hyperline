@@ -1,6 +1,6 @@
 {
 	"name": "n8n-nodes-hyperline",
-	"version": "1.0.0",
+	"version": "1.0.1",
 	"description": "n8n community node for Hyperline: customers, subscriptions, invoices, quotes, products, usage events and webhooks",
 	"license": "MIT",
 	"homepage": "https://github.com/brngts/n8n-nodes-hyperline#readme",
