@@ -1,0 +1,3955 @@
+{
+	"/v1/custom-properties": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"api_only",
+				"authorized_values",
+				"default_value",
+				"entities",
+				"name",
+				"required",
+				"slug",
+				"type"
+			]
+		}
+	},
+	"/v1/custom-properties/{id}": {
+		"PUT": {
+			"query": [],
+			"body": [
+				"api_only",
+				"authorized_values",
+				"default_value",
+				"entities",
+				"name",
+				"required",
+				"slug",
+				"type"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/coupons": {
+		"GET": {
+			"query": [
+				"skip",
+				"take"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"currency",
+				"description",
+				"discount_amount",
+				"discount_percent",
+				"duration",
+				"expiration_date",
+				"name",
+				"product_ids",
+				"product_scope",
+				"properties",
+				"redemption_limit",
+				"repeat",
+				"type"
+			]
+		}
+	},
+	"/v1/coupons/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PUT": {
+			"query": [],
+			"body": [
+				"currency",
+				"description",
+				"discount_amount",
+				"discount_percent",
+				"duration",
+				"expiration_date",
+				"name",
+				"product_ids",
+				"product_scope",
+				"properties",
+				"redemption_limit",
+				"repeat",
+				"type"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/promotion-codes": {
+		"GET": {
+			"query": [
+				"coupon_id",
+				"coupon_id__contains",
+				"coupon_id__endWith",
+				"coupon_id__equals",
+				"coupon_id__not",
+				"coupon_id__startsWith",
+				"skip",
+				"take"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"code",
+				"coupon_id",
+				"current_redemptions",
+				"customer_id",
+				"duration_count",
+				"duration_period",
+				"expires_at",
+				"max_redemptions",
+				"only_for_first_time_order",
+				"plan_id",
+				"product_id"
+			]
+		}
+	},
+	"/v1/promotion-codes/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PATCH": {
+			"query": [],
+			"body": [
+				"code",
+				"current_redemptions",
+				"customer_id",
+				"duration_count",
+				"duration_period",
+				"expires_at",
+				"max_redemptions",
+				"only_for_first_time_order",
+				"plan_id",
+				"product_id"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/products": {
+		"GET": {
+			"query": [
+				"description",
+				"description__contains",
+				"description__endWith",
+				"description__equals",
+				"description__isNotNull",
+				"description__isNull",
+				"description__not",
+				"description__startsWith",
+				"id",
+				"id__contains",
+				"id__endWith",
+				"id__equals",
+				"id__not",
+				"id__startsWith",
+				"name",
+				"name__contains",
+				"name__endWith",
+				"name__equals",
+				"name__not",
+				"name__startsWith",
+				"price_book_id",
+				"skip",
+				"status",
+				"status__in",
+				"take",
+				"type",
+				"type__contains",
+				"type__endWith",
+				"type__equals",
+				"type__not",
+				"type__startsWith"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"accounting",
+				"aggregator",
+				"aggregator_id",
+				"bundle_items",
+				"credit_aggregators",
+				"credits_balance_auto_creation_enabled",
+				"credits_grant_mode",
+				"custom_properties",
+				"description",
+				"description_display_interval_dates",
+				"display_mode",
+				"exclusive_items_enabled",
+				"is_available_on_demand",
+				"is_available_on_subscription",
+				"is_connected_seat_item",
+				"low_credits_threshold",
+				"name",
+				"price_configurations",
+				"public_description",
+				"translations",
+				"type",
+				"unit_name"
+			]
+		}
+	},
+	"/v1/products/{id}": {
+		"GET": {
+			"query": [
+				"price_book_id"
+			],
+			"body": []
+		},
+		"PUT": {
+			"query": [],
+			"body": [
+				"accounting",
+				"custom_properties",
+				"description",
+				"is_available_on_demand",
+				"is_available_on_subscription",
+				"name",
+				"properties",
+				"public_description",
+				"translations"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/products/{id}/archive": {
+		"PUT": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/products/{id}/unarchive": {
+		"PUT": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/price-configurations": {
+		"GET": {
+			"query": [
+				"price_book_id",
+				"price_book_id__contains",
+				"price_book_id__endWith",
+				"price_book_id__equals",
+				"price_book_id__isNotNull",
+				"price_book_id__isNull",
+				"price_book_id__not",
+				"price_book_id__startsWith",
+				"product_id",
+				"product_id__contains",
+				"product_id__endWith",
+				"product_id__equals",
+				"product_id__not",
+				"product_id__startsWith",
+				"skip",
+				"take"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"aggregator_filter_id",
+				"allow_on_portal",
+				"billing_interval",
+				"commitment_interval",
+				"countries",
+				"country",
+				"currency",
+				"metering_filter",
+				"plan_id",
+				"price_book_id",
+				"prices",
+				"product_id",
+				"type"
+			]
+		}
+	},
+	"/v1/price-configurations/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/price-configurations/{id}/prices": {
+		"PUT": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/bank-accounts": {
+		"GET": {
+			"query": [
+				"skip",
+				"take"
+			],
+			"body": []
+		}
+	},
+	"/v1/bank-accounts/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/bank-accounts/{id}/transactions": {
+		"GET": {
+			"query": [
+				"cursor",
+				"include_total",
+				"limit"
+			],
+			"body": []
+		}
+	},
+	"/v1/invoices": {
+		"GET": {
+			"query": [
+				"customer_external_id",
+				"customer_id",
+				"customer_id__contains",
+				"customer_id__endWith",
+				"customer_id__equals",
+				"customer_id__not",
+				"customer_id__startsWith",
+				"due_date",
+				"due_date__equals",
+				"due_date__gt",
+				"due_date__gte",
+				"due_date__lt",
+				"due_date__lte",
+				"due_date__not",
+				"emission_date",
+				"emission_date__equals",
+				"emission_date__gt",
+				"emission_date__gte",
+				"emission_date__lt",
+				"emission_date__lte",
+				"emission_date__not",
+				"invoice_number",
+				"invoice_number__contains",
+				"invoice_number__endWith",
+				"invoice_number__equals",
+				"invoice_number__not",
+				"invoice_number__startsWith",
+				"invoicing_entity_id",
+				"invoicing_entity_id__contains",
+				"invoicing_entity_id__endWith",
+				"invoicing_entity_id__equals",
+				"invoicing_entity_id__not",
+				"invoicing_entity_id__startsWith",
+				"line_item_id",
+				"order",
+				"original_invoice_id",
+				"original_invoice_id__contains",
+				"original_invoice_id__endWith",
+				"original_invoice_id__equals",
+				"original_invoice_id__isNotNull",
+				"original_invoice_id__isNull",
+				"original_invoice_id__not",
+				"original_invoice_id__startsWith",
+				"original_invoice_number",
+				"original_invoice_number__contains",
+				"original_invoice_number__endWith",
+				"original_invoice_number__equals",
+				"original_invoice_number__isNotNull",
+				"original_invoice_number__isNull",
+				"original_invoice_number__not",
+				"original_invoice_number__startsWith",
+				"period_end",
+				"period_end__equals",
+				"period_end__gt",
+				"period_end__gte",
+				"period_end__isNotNull",
+				"period_end__isNull",
+				"period_end__lt",
+				"period_end__lte",
+				"period_end__not",
+				"period_start",
+				"period_start__equals",
+				"period_start__gt",
+				"period_start__gte",
+				"period_start__isNotNull",
+				"period_start__isNull",
+				"period_start__lt",
+				"period_start__lte",
+				"period_start__not",
+				"skip",
+				"sort",
+				"status",
+				"status__in",
+				"subscription_id",
+				"subscription_id__contains",
+				"subscription_id__endWith",
+				"subscription_id__equals",
+				"subscription_id__isNotNull",
+				"subscription_id__isNull",
+				"subscription_id__not",
+				"subscription_id__startsWith",
+				"take",
+				"type",
+				"type__in",
+				"updated_at",
+				"updated_at__equals",
+				"updated_at__gt",
+				"updated_at__gte",
+				"updated_at__lt",
+				"updated_at__lte",
+				"updated_at__not"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"additional_display_fields",
+				"additional_info",
+				"bank_account_id",
+				"coupons",
+				"currency",
+				"custom_note",
+				"custom_properties",
+				"customer_id",
+				"document_name",
+				"due_at",
+				"emitted_at",
+				"footer",
+				"invoicing_entity_id",
+				"issuing_method",
+				"line_items",
+				"number",
+				"payment_method_id",
+				"payment_method_strategy",
+				"properties",
+				"purchase_order",
+				"reference",
+				"settled_at",
+				"status",
+				"subscription_id",
+				"tax_rate",
+				"tax_scheme",
+				"transactions",
+				"type"
+			]
+		}
+	},
+	"/v2/invoices": {
+		"GET": {
+			"query": [
+				"cursor",
+				"customer_external_id",
+				"customer_id",
+				"customer_id__contains",
+				"customer_id__endWith",
+				"customer_id__equals",
+				"customer_id__not",
+				"customer_id__startsWith",
+				"due_at",
+				"due_at__equals",
+				"due_at__gt",
+				"due_at__gte",
+				"due_at__lt",
+				"due_at__lte",
+				"due_at__not",
+				"include_total",
+				"invoice_number",
+				"invoice_number__contains",
+				"invoice_number__endWith",
+				"invoice_number__equals",
+				"invoice_number__not",
+				"invoice_number__startsWith",
+				"invoicing_entity_id",
+				"invoicing_entity_id__contains",
+				"invoicing_entity_id__endWith",
+				"invoicing_entity_id__equals",
+				"invoicing_entity_id__not",
+				"invoicing_entity_id__startsWith",
+				"issued_at",
+				"issued_at__equals",
+				"issued_at__gt",
+				"issued_at__gte",
+				"issued_at__lt",
+				"issued_at__lte",
+				"issued_at__not",
+				"limit",
+				"line_item_id",
+				"order",
+				"original_invoice_id",
+				"original_invoice_id__contains",
+				"original_invoice_id__endWith",
+				"original_invoice_id__equals",
+				"original_invoice_id__isNotNull",
+				"original_invoice_id__isNull",
+				"original_invoice_id__not",
+				"original_invoice_id__startsWith",
+				"original_invoice_number",
+				"original_invoice_number__contains",
+				"original_invoice_number__endWith",
+				"original_invoice_number__equals",
+				"original_invoice_number__isNotNull",
+				"original_invoice_number__isNull",
+				"original_invoice_number__not",
+				"original_invoice_number__startsWith",
+				"period_end",
+				"period_end__equals",
+				"period_end__gt",
+				"period_end__gte",
+				"period_end__isNotNull",
+				"period_end__isNull",
+				"period_end__lt",
+				"period_end__lte",
+				"period_end__not",
+				"period_start",
+				"period_start__equals",
+				"period_start__gt",
+				"period_start__gte",
+				"period_start__isNotNull",
+				"period_start__isNull",
+				"period_start__lt",
+				"period_start__lte",
+				"period_start__not",
+				"sort",
+				"status",
+				"status__in",
+				"subscription_id",
+				"subscription_id__contains",
+				"subscription_id__endWith",
+				"subscription_id__equals",
+				"subscription_id__isNotNull",
+				"subscription_id__isNull",
+				"subscription_id__not",
+				"subscription_id__startsWith",
+				"type",
+				"type__in",
+				"updated_at",
+				"updated_at__equals",
+				"updated_at__gt",
+				"updated_at__gte",
+				"updated_at__lt",
+				"updated_at__lte",
+				"updated_at__not"
+			],
+			"body": []
+		}
+	},
+	"/v1/invoices/{id}/credit-notes": {
+		"POST": {
+			"query": [],
+			"body": [
+				"amount_including_tax",
+				"refund_method",
+				"status",
+				"trigger_refund"
+			]
+		}
+	},
+	"/v2/invoices/batch": {
+		"POST": {
+			"query": [],
+			"body": [
+				"batch_id",
+				"invoices"
+			]
+		}
+	},
+	"/v1/invoices/{id}/validate": {
+		"POST": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/invoices/{id}/charge": {
+		"POST": {
+			"query": [],
+			"body": [
+				"amount",
+				"payment_method_id"
+			]
+		}
+	},
+	"/v1/invoices/{id}/void": {
+		"POST": {
+			"query": [],
+			"body": [
+				"send_email"
+			]
+		}
+	},
+	"/v1/invoices/send-email": {
+		"POST": {
+			"query": [],
+			"body": [
+				"batch_id",
+				"email_type",
+				"ids"
+			]
+		}
+	},
+	"/v1/invoices/{id}/uncollectible": {
+		"POST": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/invoices/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PATCH": {
+			"query": [],
+			"body": [
+				"additional_display_fields",
+				"additional_info",
+				"bank_account_id",
+				"coupons",
+				"custom_note",
+				"custom_properties",
+				"customer",
+				"document_name",
+				"emitted_at",
+				"footer",
+				"issuing_method",
+				"line_items",
+				"payment_method_id",
+				"payment_method_type",
+				"properties",
+				"purchase_order",
+				"reference",
+				"subscription_id",
+				"tax_scheme",
+				"type"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v2/invoices/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/invoices/{id}/upload": {
+		"POST": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v2/invoices/{id}/download": {
+		"GET": {
+			"query": [
+				"lang",
+				"locale"
+			],
+			"body": []
+		}
+	},
+	"/v1/invoices/{id}/events": {
+		"GET": {
+			"query": [
+				"event_type",
+				"event_type__contains",
+				"event_type__endWith",
+				"event_type__equals",
+				"event_type__not",
+				"event_type__startsWith",
+				"order",
+				"product_id",
+				"product_id__contains",
+				"product_id__endWith",
+				"product_id__equals",
+				"product_id__not",
+				"product_id__startsWith",
+				"skip",
+				"sort",
+				"take",
+				"timestamp",
+				"timestamp__equals",
+				"timestamp__gt",
+				"timestamp__gte",
+				"timestamp__lt",
+				"timestamp__lte",
+				"timestamp__not"
+			],
+			"body": []
+		}
+	},
+	"/v1/invoices/{id}/transactions": {
+		"POST": {
+			"query": [],
+			"body": [
+				"amount",
+				"bank_account_id",
+				"payment_method_id",
+				"payment_method_type",
+				"process_at",
+				"provider_id",
+				"provider_name",
+				"provider_transaction_id"
+			]
+		}
+	},
+	"/v1/invoices/{id}/transactions/{transactionId}": {
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/accounting/journal-entries": {
+		"GET": {
+			"query": [
+				"customer_id",
+				"entry_number",
+				"invoice_id",
+				"invoicing_entity_id",
+				"ledger_account_id",
+				"ledger_id",
+				"origin",
+				"quarter",
+				"rule_id",
+				"search",
+				"skip",
+				"status",
+				"subscription_id",
+				"take",
+				"transaction_id",
+				"year"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"description",
+				"entry_date_at",
+				"ledger_id",
+				"lines",
+				"recognition_schedule"
+			]
+		}
+	},
+	"/v1/accounting/journal-entries/{id}": {
+		"GET": {
+			"query": [
+				"invoicing_entity_id"
+			],
+			"body": []
+		}
+	},
+	"/v1/accounting/journal-entries/recognition-preview": {
+		"POST": {
+			"query": [],
+			"body": [
+				"amount",
+				"granularity",
+				"ledger_id",
+				"method",
+				"recognition_date",
+				"window"
+			]
+		}
+	},
+	"/v1/accounting/journal-entry-lines": {
+		"GET": {
+			"query": [
+				"customer_id",
+				"entry_id",
+				"entry_status",
+				"invoice_line_item_id",
+				"invoicing_entity_id",
+				"ledger_account_id",
+				"quarter",
+				"search",
+				"skip",
+				"take",
+				"type",
+				"year"
+			],
+			"body": []
+		}
+	},
+	"/v1/accounting/ledgers": {
+		"GET": {
+			"query": [
+				"invoicing_entity_id"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"code",
+				"currency",
+				"description",
+				"entry_number_pattern",
+				"fiscal_year_end_month",
+				"invoicing_entity_id",
+				"is_inactive",
+				"is_primary",
+				"name",
+				"type"
+			]
+		}
+	},
+	"/v1/accounting/ledgers/{id}": {
+		"GET": {
+			"query": [
+				"invoicing_entity_id"
+			],
+			"body": []
+		},
+		"PUT": {
+			"query": [],
+			"body": [
+				"code",
+				"currency",
+				"description",
+				"entry_number_pattern",
+				"name",
+				"next_entry_number",
+				"type"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/accounting/ledgers/{id}/close": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"reason",
+				"through_month"
+			]
+		}
+	},
+	"/v1/accounting/ledgers/{id}/close-events": {
+		"GET": {
+			"query": [
+				"skip",
+				"take"
+			],
+			"body": []
+		}
+	},
+	"/v1/accounting/ledgers/{id}/reopen": {
+		"POST": {
+			"query": [],
+			"body": [
+				"from_month",
+				"reason"
+			]
+		}
+	},
+	"/v1/accounting/accounts": {
+		"GET": {
+			"query": [
+				"client_provider_id",
+				"code",
+				"id",
+				"invoicing_entity_id",
+				"ledger_id",
+				"name",
+				"order",
+				"quarter",
+				"search",
+				"skip",
+				"sort_by",
+				"take",
+				"type",
+				"year"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"code",
+				"ledger_id",
+				"name",
+				"provider_account_id",
+				"type"
+			]
+		}
+	},
+	"/v1/accounting/primary-ledger/accounts": {
+		"GET": {
+			"query": [
+				"invoicing_entity_id",
+				"skip",
+				"take"
+			],
+			"body": []
+		}
+	},
+	"/v1/accounting/accounts/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PUT": {
+			"query": [],
+			"body": [
+				"code",
+				"currency",
+				"description",
+				"name",
+				"type"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/accounting/income-statement/export": {
+		"POST": {
+			"query": [],
+			"body": [
+				"include_reversed",
+				"invoicing_entity_id",
+				"ledger_id",
+				"period_from",
+				"period_to",
+				"status"
+			]
+		}
+	},
+	"/v1/accounting/general-ledger/export": {
+		"POST": {
+			"query": [],
+			"body": [
+				"account_ids",
+				"account_types",
+				"include_reversed",
+				"invoicing_entity_id",
+				"ledger_id",
+				"period_from",
+				"period_to",
+				"status"
+			]
+		}
+	},
+	"/v1/accounting/revrec/waterfall": {
+		"GET": {
+			"query": [
+				"customer_id__in",
+				"ledger_id",
+				"product_id__in",
+				"search",
+				"year"
+			],
+			"body": []
+		}
+	},
+	"/v1/accounting/revrec/waterfall/cell": {
+		"GET": {
+			"query": [
+				"booked_month",
+				"cell_type",
+				"customer_id__in",
+				"ledger_id",
+				"product_id__in",
+				"recognition_month",
+				"search",
+				"skip",
+				"status",
+				"take",
+				"year"
+			],
+			"body": []
+		}
+	},
+	"/v1/accounting/revrec/waterfall/export": {
+		"POST": {
+			"query": [],
+			"body": [
+				"ledger_id",
+				"year"
+			]
+		}
+	},
+	"/v1/accounting/revrec/recognized-summary/export": {
+		"POST": {
+			"query": [],
+			"body": [
+				"file_type",
+				"ledger_id",
+				"month_from",
+				"month_to"
+			]
+		}
+	},
+	"/v1/accounting/revrec/unbilled": {
+		"GET": {
+			"query": [
+				"subscription_id"
+			],
+			"body": []
+		}
+	},
+	"/v1/accounting/revrec/schedules": {
+		"GET": {
+			"query": [
+				"invoice_id",
+				"invoicing_entity_id",
+				"skip",
+				"take"
+			],
+			"body": []
+		}
+	},
+	"/v1/accounting/revrec/schedules/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/accounting/revrec/schedules/{schedule_id}/adjustments": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/accounting/revrec/schedules/{schedule_id}/reshape": {
+		"POST": {
+			"query": [],
+			"body": [
+				"reason_code",
+				"reason_detail",
+				"recognize_now_amount",
+				"window"
+			]
+		}
+	},
+	"/v1/accounting/revrec/schedules/{schedule_id}/reshape/preview": {
+		"POST": {
+			"query": [],
+			"body": [
+				"recognize_now_amount",
+				"window"
+			]
+		}
+	},
+	"/v1/accounting/revrec/slices/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/accounting/rules": {
+		"GET": {
+			"query": [
+				"category",
+				"category__contains",
+				"category__endWith",
+				"category__equals",
+				"category__not",
+				"category__startsWith",
+				"ledger_id",
+				"ledger_id__contains",
+				"ledger_id__endWith",
+				"ledger_id__equals",
+				"ledger_id__not",
+				"ledger_id__startsWith",
+				"skip",
+				"take"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"allowance_for_doubtful_accounts_id",
+				"ar_ledger_account_id",
+				"bank_account_ids",
+				"cash_ledger_account_id",
+				"category",
+				"client_provider_ids",
+				"contra_revenue_ledger_account_id",
+				"countries",
+				"coupon_ids",
+				"currencies",
+				"custom_property_filters",
+				"customer_credits_ledger_account_id",
+				"customer_ids",
+				"deferred_discount_ledger_account_id",
+				"deferred_revenue_ledger_account_id",
+				"discount_ledger_account_id",
+				"discount_recognition_method",
+				"entity_type",
+				"interval_count",
+				"interval_period",
+				"invoice_types",
+				"journal_id",
+				"ledger_id",
+				"name",
+				"output_tax_ledger_account_id",
+				"payment_method_types",
+				"payment_processing_fees_expense_ledger_account_id",
+				"payment_processing_fees_revenue_ledger_account_id",
+				"payments_clearing_ledger_account_id",
+				"priority",
+				"product_ids",
+				"product_types",
+				"provider_fees_expense_ledger_account_id",
+				"rev_rec_granularity",
+				"rev_rec_method",
+				"rev_rec_point_in_time_basis",
+				"revenue_ledger_account_id",
+				"tax_rate_classes",
+				"tax_schemes",
+				"tax_territories",
+				"uncollectible_debit_ledger_account_id"
+			]
+		}
+	},
+	"/v1/accounting/rules/tree": {
+		"GET": {
+			"query": [
+				"invoicing_entity_id",
+				"ledger_id",
+				"max_depth",
+				"search"
+			],
+			"body": []
+		}
+	},
+	"/v1/accounting/rules/defaults": {
+		"POST": {
+			"query": [],
+			"body": [
+				"category",
+				"filters",
+				"ledger_id"
+			]
+		}
+	},
+	"/v1/accounting/rules/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PUT": {
+			"query": [],
+			"body": [
+				"allowance_for_doubtful_accounts_id",
+				"ar_ledger_account_id",
+				"bank_account_ids",
+				"cash_ledger_account_id",
+				"category",
+				"client_provider_ids",
+				"contra_revenue_ledger_account_id",
+				"countries",
+				"coupon_ids",
+				"currencies",
+				"custom_property_filters",
+				"customer_credits_ledger_account_id",
+				"customer_ids",
+				"deferred_discount_ledger_account_id",
+				"deferred_revenue_ledger_account_id",
+				"discount_ledger_account_id",
+				"discount_recognition_method",
+				"entity_type",
+				"interval_count",
+				"interval_period",
+				"invoice_types",
+				"journal_id",
+				"name",
+				"output_tax_ledger_account_id",
+				"payment_method_types",
+				"payment_processing_fees_expense_ledger_account_id",
+				"payment_processing_fees_revenue_ledger_account_id",
+				"payments_clearing_ledger_account_id",
+				"priority",
+				"product_ids",
+				"product_types",
+				"provider_fees_expense_ledger_account_id",
+				"rev_rec_granularity",
+				"rev_rec_method",
+				"rev_rec_point_in_time_basis",
+				"revenue_ledger_account_id",
+				"tax_rate_classes",
+				"tax_schemes",
+				"tax_territories",
+				"uncollectible_debit_ledger_account_id"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/accounting/rules/resolve": {
+		"POST": {
+			"query": [],
+			"body": [
+				"bank_account_id",
+				"category",
+				"client_provider_id",
+				"country",
+				"coupon_id",
+				"currency",
+				"custom_properties",
+				"customer_id",
+				"interval_count",
+				"interval_period",
+				"invoice_type",
+				"ledger_id",
+				"payment_method_type",
+				"product_id",
+				"product_type",
+				"tax_rate_class",
+				"tax_scheme",
+				"tax_territory"
+			]
+		}
+	},
+	"/v1/aggregators": {
+		"GET": {
+			"query": [
+				"skip",
+				"take"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"aggregate_on_customers_enabled",
+				"allow_negative_values",
+				"custom_event_name",
+				"default_interval_count",
+				"default_interval_period",
+				"description",
+				"entity",
+				"exposed_event_keys",
+				"formula_sql",
+				"name",
+				"operation",
+				"property",
+				"thresholds",
+				"type",
+				"unit_name",
+				"where"
+			]
+		}
+	},
+	"/v1/aggregators/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PUT": {
+			"query": [],
+			"body": [
+				"aggregate_on_customers_enabled",
+				"allow_negative_values",
+				"custom_event_name",
+				"default_interval_count",
+				"default_interval_period",
+				"description",
+				"entity",
+				"exposed_event_keys",
+				"formula_sql",
+				"name",
+				"operation",
+				"property",
+				"thresholds",
+				"type",
+				"unit_name",
+				"where"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/aggregators/{id}/usage": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/aggregators/{id}/usage/timeseries": {
+		"GET": {
+			"query": [
+				"aggregator_filter_id",
+				"end_date",
+				"group_by",
+				"start_date"
+			],
+			"body": []
+		}
+	},
+	"/v1/aggregators/{id}/usage/group-by-customer": {
+		"GET": {
+			"query": [
+				"aggregator_filter_id",
+				"end_date",
+				"skip",
+				"start_date",
+				"take"
+			],
+			"body": []
+		}
+	},
+	"/v1/aggregators/{id}/usage/events": {
+		"GET": {
+			"query": [
+				"aggregator_filter_id",
+				"end_date",
+				"skip",
+				"start_date",
+				"take"
+			],
+			"body": []
+		}
+	},
+	"/v1/ai/billing/plans": {
+		"GET": {
+			"query": [
+				"mode",
+				"skip",
+				"take"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"grant_rollover_enabled",
+				"markup_percent",
+				"mode",
+				"name",
+				"overage_markup_percent",
+				"overage_mode",
+				"overage_rate_card_id",
+				"per_seat_credits",
+				"rate_card_id",
+				"settlement_interval_minutes",
+				"settlement_schedule",
+				"windows"
+			]
+		}
+	},
+	"/v1/ai/billing/plans/default": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PUT": {
+			"query": [],
+			"body": [
+				"auto_apply",
+				"plan_id"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/ai/billing/plans/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PUT": {
+			"query": [],
+			"body": [
+				"grant_rollover_enabled",
+				"markup_percent",
+				"name",
+				"overage_markup_percent",
+				"overage_mode",
+				"overage_rate_card_id",
+				"per_seat_credits",
+				"rate_card_id",
+				"settlement_interval_minutes",
+				"settlement_schedule",
+				"windows"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/ai/billing/rate-cards": {
+		"GET": {
+			"query": [
+				"currency",
+				"denomination",
+				"search",
+				"skip",
+				"take"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"currency",
+				"denomination",
+				"fallback_per_usd",
+				"name",
+				"rows"
+			]
+		}
+	},
+	"/v1/ai/billing/rate-cards/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PUT": {
+			"query": [],
+			"body": [
+				"fallback_per_usd",
+				"name",
+				"rows"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/ai/billing/costs": {
+		"GET": {
+			"query": [
+				"enabled_only",
+				"skip",
+				"take"
+			],
+			"body": []
+		}
+	},
+	"/v1/ai/billing/costs/items": {
+		"POST": {
+			"query": [],
+			"body": [
+				"dimensions",
+				"item",
+				"provider"
+			]
+		}
+	},
+	"/v1/ai/billing/costs/items/{id}": {
+		"PUT": {
+			"query": [],
+			"body": [
+				"dimensions",
+				"item",
+				"provider"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/ai/billing/costs/overrides": {
+		"PUT": {
+			"query": [],
+			"body": [
+				"cache_write_per_m_tokens",
+				"cached_input_per_m_tokens",
+				"dimensions",
+				"input_per_m_tokens",
+				"model",
+				"output_per_m_tokens",
+				"provider"
+			]
+		}
+	},
+	"/v1/ai/billing/costs/overrides/{id}": {
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/ai/billing/customers/{id}/policies": {
+		"GET": {
+			"query": [
+				"skip",
+				"take"
+			],
+			"body": []
+		}
+	},
+	"/v1/ai/billing/customers/{id}/policies/default": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PUT": {
+			"query": [],
+			"body": [
+				"blocked",
+				"credit_product_id",
+				"floor",
+				"markup_percent",
+				"mode",
+				"overage_markup_percent",
+				"overage_mode",
+				"overage_rate_card_id",
+				"overage_wallet_id",
+				"plan_id",
+				"rate_card_id",
+				"settlement_interval_minutes",
+				"settlement_schedule",
+				"wallet_id",
+				"windows"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/ai/billing/customers/{id}/policies/agents/{agent_slug}": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PUT": {
+			"query": [],
+			"body": [
+				"blocked",
+				"credit_product_id",
+				"floor",
+				"markup_percent",
+				"mode",
+				"overage_markup_percent",
+				"overage_mode",
+				"overage_rate_card_id",
+				"overage_wallet_id",
+				"plan_id",
+				"rate_card_id",
+				"settlement_interval_minutes",
+				"settlement_schedule",
+				"wallet_id",
+				"windows"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/ai/billing/customers/{id}/apply-default-plan": {
+		"POST": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/ai/billing/customers/{id}/balance": {
+		"GET": {
+			"query": [
+				"agent_slug"
+			],
+			"body": []
+		}
+	},
+	"/v1/ai/billing/customers/{id}/windows/reset": {
+		"POST": {
+			"query": [
+				"agent_slug"
+			],
+			"body": []
+		}
+	},
+	"/v1/ai/billing/customers/{id}/consumption": {
+		"GET": {
+			"query": [
+				"agent_slug",
+				"from",
+				"overage",
+				"skip",
+				"take",
+				"to"
+			],
+			"body": []
+		}
+	},
+	"/v1/ai/billing/products/{id}/rate-card": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PUT": {
+			"query": [],
+			"body": [
+				"rate_card_id"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/analytics": {
+		"GET": {
+			"query": [
+				"invoicing_entity_id"
+			],
+			"body": []
+		}
+	},
+	"/v1/approvals/workflows": {
+		"GET": {
+			"query": [
+				"is_active",
+				"skip",
+				"take"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"applicable_flows",
+				"description",
+				"email_notification_enabled",
+				"is_active",
+				"name",
+				"priority",
+				"rules",
+				"step_execution",
+				"steps"
+			]
+		}
+	},
+	"/v1/approvals/workflows/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PUT": {
+			"query": [],
+			"body": [
+				"applicable_flows",
+				"description",
+				"email_notification_enabled",
+				"is_active",
+				"name",
+				"priority",
+				"rules",
+				"step_execution",
+				"steps"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/audit-logs": {
+		"GET": {
+			"query": [
+				"cursor",
+				"customer_id",
+				"include_total",
+				"invoice_id",
+				"limit",
+				"quote_id",
+				"subscription_id",
+				"transaction_id"
+			],
+			"body": []
+		}
+	},
+	"/v1/catalog/versions": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/catalog/versions/draft": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"description",
+				"name"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/catalog/versions/draft/publish": {
+		"POST": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/catalog/versions/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/catalog/versions/{id}/revert": {
+		"POST": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/catalog/export": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/companies": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"address",
+				"name"
+			]
+		}
+	},
+	"/v1/customers/credits": {
+		"GET": {
+			"query": [
+				"customer_id",
+				"customer_id__contains",
+				"customer_id__endWith",
+				"customer_id__equals",
+				"customer_id__not",
+				"customer_id__startsWith",
+				"product_id",
+				"product_id__contains",
+				"product_id__endWith",
+				"product_id__equals",
+				"product_id__not",
+				"product_id__startsWith",
+				"skip",
+				"take",
+				"updated_at",
+				"updated_at__equals",
+				"updated_at__gt",
+				"updated_at__gte",
+				"updated_at__lt",
+				"updated_at__lte",
+				"updated_at__not"
+			],
+			"body": []
+		}
+	},
+	"/v1/customers/{id}/credits": {
+		"GET": {
+			"query": [
+				"skip",
+				"take"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"auto_topup",
+				"current_balance",
+				"low_count_threshold",
+				"name",
+				"product_id"
+			]
+		}
+	},
+	"/v1/customers/{id}/credits/{productId}": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PUT": {
+			"query": [],
+			"body": [
+				"auto_topup",
+				"low_count_threshold",
+				"name"
+			]
+		}
+	},
+	"/v1/customers/{id}/credits/{productId}/transactions": {
+		"GET": {
+			"query": [
+				"created_at",
+				"id",
+				"invoice_id",
+				"skip",
+				"take",
+				"type"
+			],
+			"body": []
+		}
+	},
+	"/v1/customers/{id}/credits/{productId}/purchase": {
+		"POST": {
+			"query": [],
+			"body": [
+				"amount_excluding_tax",
+				"credit_count",
+				"expires_at",
+				"price_id"
+			]
+		}
+	},
+	"/v1/customers/{id}/credits/{productId}/transactions/{transactionId}": {
+		"PATCH": {
+			"query": [],
+			"body": [
+				"expires_at"
+			]
+		}
+	},
+	"/v1/customers/{id}/credits/{productId}/topup": {
+		"POST": {
+			"query": [],
+			"body": [
+				"credit_count",
+				"expires_at"
+			]
+		}
+	},
+	"/v1/customers/{id}/credits/{productId}/usage": {
+		"POST": {
+			"query": [],
+			"body": [
+				"event_id",
+				"usage_retained"
+			]
+		}
+	},
+	"/v1/customers/{id}/credits/{productId}/portal-settings": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PUT": {
+			"query": [],
+			"body": [
+				"custom_price_configuration",
+				"enabled",
+				"price_configuration_id"
+			]
+		}
+	},
+	"/v1/customers/{id}/features": {
+		"GET": {
+			"query": [
+				"at"
+			],
+			"body": []
+		}
+	},
+	"/v1/customers/{id}/features/{code}": {
+		"PUT": {
+			"query": [],
+			"body": [
+				"expires_at",
+				"reason",
+				"value"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/customers/{id}/payment-methods": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"provider_id",
+				"provider_name",
+				"provider_payment_method_id"
+			]
+		}
+	},
+	"/v1/customers/{id}/payment-methods/{paymentMethodId}": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/customers/{customerId}/addresses": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"city",
+				"country",
+				"line1",
+				"line2",
+				"name",
+				"state",
+				"tax_id",
+				"type",
+				"zip"
+			]
+		}
+	},
+	"/v1/customers/{customerId}/addresses/{addressId}": {
+		"PATCH": {
+			"query": [],
+			"body": [
+				"city",
+				"country",
+				"line1",
+				"line2",
+				"name",
+				"state",
+				"tax_id",
+				"zip"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/customers/{customerId}/shipping": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PUT": {
+			"query": [],
+			"body": [
+				"address_id",
+				"destination"
+			]
+		}
+	},
+	"/v2/customers": {
+		"GET": {
+			"query": [
+				"billing_email",
+				"billing_email__contains",
+				"billing_email__endWith",
+				"billing_email__equals",
+				"billing_email__isNotNull",
+				"billing_email__isNull",
+				"billing_email__not",
+				"billing_email__startsWith",
+				"country",
+				"country__contains",
+				"country__endWith",
+				"country__equals",
+				"country__isNotNull",
+				"country__isNull",
+				"country__not",
+				"country__startsWith",
+				"created_at",
+				"created_at__equals",
+				"created_at__gt",
+				"created_at__gte",
+				"created_at__lt",
+				"created_at__lte",
+				"created_at__not",
+				"currency",
+				"currency__contains",
+				"currency__endWith",
+				"currency__equals",
+				"currency__isNotNull",
+				"currency__isNull",
+				"currency__not",
+				"currency__startsWith",
+				"cursor",
+				"custom_properties",
+				"external_id",
+				"external_id__contains",
+				"external_id__endWith",
+				"external_id__equals",
+				"external_id__isNotNull",
+				"external_id__isNull",
+				"external_id__not",
+				"external_id__startsWith",
+				"include_total",
+				"integration_entity_id",
+				"invoicing_entity_id",
+				"invoicing_entity_id__contains",
+				"invoicing_entity_id__endWith",
+				"invoicing_entity_id__equals",
+				"invoicing_entity_id__not",
+				"invoicing_entity_id__startsWith",
+				"limit",
+				"name",
+				"name__contains",
+				"name__endWith",
+				"name__equals",
+				"name__not",
+				"name__startsWith",
+				"order",
+				"payment_method_type",
+				"payment_method_type__in",
+				"search",
+				"segment_id",
+				"sort",
+				"status",
+				"status__in",
+				"subscription_status",
+				"subscription_status__in",
+				"tax_id",
+				"tax_id__contains",
+				"tax_id__endWith",
+				"tax_id__equals",
+				"tax_id__isNotNull",
+				"tax_id__isNull",
+				"tax_id__not",
+				"tax_id__startsWith",
+				"tax_id_status",
+				"type",
+				"type__in",
+				"updated_at",
+				"updated_at__equals",
+				"updated_at__gt",
+				"updated_at__gte",
+				"updated_at__lt",
+				"updated_at__lte",
+				"updated_at__not"
+			],
+			"body": []
+		}
+	},
+	"/v2/customers/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/customers": {
+		"POST": {
+			"query": [],
+			"body": [
+				"available_payment_methods",
+				"bank_account",
+				"billing_address",
+				"billing_email",
+				"country",
+				"currency",
+				"custom_payment_delay",
+				"custom_payment_initiation_delay",
+				"custom_properties",
+				"domain",
+				"einvoicing_code",
+				"external_id",
+				"follower_ids",
+				"force_invoice_draft",
+				"invoice_emails",
+				"invoice_reminders_enabled",
+				"invoicing_entity_id",
+				"is_government_affiliated",
+				"language",
+				"local_tax_number",
+				"name",
+				"organisation_id",
+				"organisation_invoicing",
+				"owner_id",
+				"payment_method_type",
+				"price_book_id",
+				"properties",
+				"registration_number",
+				"shipping_address",
+				"tax_ids",
+				"tax_rate_custom",
+				"taxability",
+				"timezone",
+				"type",
+				"vat_number",
+				"vat_rate_custom"
+			]
+		}
+	},
+	"/v1/customers/batch": {
+		"POST": {
+			"query": [],
+			"body": [
+				"customers"
+			]
+		}
+	},
+	"/v1/customers/{id}/portal": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/customers/{id}": {
+		"PUT": {
+			"query": [],
+			"body": [
+				"available_payment_methods",
+				"bank_account",
+				"billing_address",
+				"billing_email",
+				"country",
+				"currency",
+				"custom_payment_delay",
+				"custom_payment_initiation_delay",
+				"custom_properties",
+				"domain",
+				"einvoicing_code",
+				"external_id",
+				"follower_ids",
+				"force_invoice_draft",
+				"invoice_emails",
+				"invoice_reminders_enabled",
+				"invoicing_entity_id",
+				"is_government_affiliated",
+				"language",
+				"local_tax_number",
+				"name",
+				"organisation_id",
+				"organisation_invoicing",
+				"owner_id",
+				"payment_method_id",
+				"payment_method_type",
+				"price_book_id",
+				"properties",
+				"registration_number",
+				"shipping_address",
+				"tax_ids",
+				"tax_rate_custom",
+				"taxability",
+				"timezone",
+				"type",
+				"vat_number",
+				"vat_rate_custom"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/customers/{id}/archive": {
+		"PUT": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/customers/{id}/unarchive": {
+		"PUT": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/customers/providers-bulk-update": {
+		"POST": {
+			"query": [
+				"sync"
+			],
+			"body": []
+		}
+	},
+	"/v1/customers/{id}/taxes/rates": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/customers/{id}/usage": {
+		"GET": {
+			"query": [
+				"end_date",
+				"start_date"
+			],
+			"body": []
+		}
+	},
+	"/v1/customers/{id}/usage/{aggregator_id}": {
+		"GET": {
+			"query": [
+				"end_date",
+				"start_date"
+			],
+			"body": []
+		}
+	},
+	"/v1/customers/{id}/usage/{aggregator_id}/timeseries": {
+		"GET": {
+			"query": [
+				"aggregator_filter_id",
+				"end_date",
+				"group_by",
+				"start_date"
+			],
+			"body": []
+		}
+	},
+	"/v1/customers/{id}/usage/{aggregator_id}/events": {
+		"GET": {
+			"query": [
+				"aggregator_filter_id",
+				"end_date",
+				"skip",
+				"start_date",
+				"take"
+			],
+			"body": []
+		}
+	},
+	"/v1/organisations": {
+		"GET": {
+			"query": [
+				"created_at",
+				"created_at__equals",
+				"created_at__gt",
+				"created_at__gte",
+				"created_at__lt",
+				"created_at__lte",
+				"created_at__not",
+				"cursor",
+				"include_total",
+				"limit",
+				"order",
+				"sort",
+				"updated_at",
+				"updated_at__equals",
+				"updated_at__gt",
+				"updated_at__gte",
+				"updated_at__lt",
+				"updated_at__lte",
+				"updated_at__not"
+			],
+			"body": []
+		}
+	},
+	"/v1/organisations/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PATCH": {
+			"query": [],
+			"body": [
+				"country",
+				"currency",
+				"invoice_schedule",
+				"name",
+				"next_invoice_at"
+			]
+		}
+	},
+	"/v1/customers/segments": {
+		"GET": {
+			"query": [
+				"skip",
+				"take"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"description",
+				"name",
+				"rules"
+			]
+		}
+	},
+	"/v1/customers/segments/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PATCH": {
+			"query": [],
+			"body": [
+				"description",
+				"name",
+				"rules"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/exports": {
+		"GET": {
+			"query": [
+				"skip",
+				"take"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"file_type",
+				"name"
+			]
+		}
+	},
+	"/v1/exports/{exportId}": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v2/exports/{exportId}/download": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/features": {
+		"GET": {
+			"query": [
+				"code",
+				"code__contains",
+				"code__endWith",
+				"code__equals",
+				"code__not",
+				"code__startsWith",
+				"name",
+				"name__contains",
+				"name__endWith",
+				"name__equals",
+				"name__not",
+				"name__startsWith",
+				"search",
+				"skip",
+				"status",
+				"status__in",
+				"take"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"code",
+				"default_value",
+				"description",
+				"name",
+				"resolution_strategy",
+				"value_type"
+			]
+		}
+	},
+	"/v1/features/{code}": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PUT": {
+			"query": [],
+			"body": [
+				"default_value",
+				"description",
+				"name",
+				"resolution_strategy",
+				"value_type"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/features/{code}/archive": {
+		"PUT": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/features/{code}/unarchive": {
+		"PUT": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/files/{id}/download": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/files": {
+		"GET": {
+			"query": [
+				"customer_id",
+				"customer_id__contains",
+				"customer_id__endWith",
+				"customer_id__equals",
+				"customer_id__isNotNull",
+				"customer_id__isNull",
+				"customer_id__not",
+				"customer_id__startsWith",
+				"name",
+				"name__contains",
+				"name__endWith",
+				"name__equals",
+				"name__not",
+				"name__startsWith",
+				"skip",
+				"take"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"customer_id",
+				"name"
+			]
+		}
+	},
+	"/v1/files/uploads": {
+		"POST": {
+			"query": [],
+			"body": [
+				"filename",
+				"mime_type"
+			]
+		}
+	},
+	"/v1/files/uploads/{id}/download": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/files/{id}": {
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/integrations/components/token": {
+		"POST": {
+			"query": [],
+			"body": [
+				"customer_id"
+			]
+		}
+	},
+	"/v1/invoicing-entities": {
+		"GET": {
+			"query": [
+				"skip",
+				"take"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"accounting_currency",
+				"address_line1",
+				"address_line2",
+				"billing_email",
+				"brand_color",
+				"city",
+				"country",
+				"credit_note_number_pattern",
+				"credit_note_wallet_refund_enabled",
+				"currency",
+				"default_payment_delay",
+				"document_footer",
+				"document_number_pattern",
+				"document_payment_initiation_delay",
+				"favicon_url",
+				"forced_customer_type",
+				"fx_conversion_display_enabled",
+				"invoice_footer",
+				"invoice_grace_period_duration",
+				"invoice_late_fees",
+				"invoice_number_pattern",
+				"invoice_payment_initiation_delay",
+				"is_default",
+				"language",
+				"logo_url",
+				"name",
+				"next_credit_note_number",
+				"next_document_number",
+				"next_invoice_number",
+				"quote_footer",
+				"registration_number",
+				"standalone_credit_note_creation_enabled",
+				"state",
+				"tax_id",
+				"timezone",
+				"trade_name",
+				"zip_code"
+			]
+		}
+	},
+	"/v1/invoicing-entities/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PUT": {
+			"query": [],
+			"body": [
+				"accounting_currency",
+				"address_line1",
+				"address_line2",
+				"billing_email",
+				"brand_color",
+				"city",
+				"country",
+				"credit_note_number_pattern",
+				"credit_note_wallet_refund_enabled",
+				"currency",
+				"default_payment_delay",
+				"document_footer",
+				"document_number_pattern",
+				"document_payment_initiation_delay",
+				"favicon_url",
+				"forced_customer_type",
+				"fx_conversion_display_enabled",
+				"invoice_footer",
+				"invoice_grace_period_duration",
+				"invoice_late_fees",
+				"invoice_number_pattern",
+				"invoice_payment_initiation_delay",
+				"is_default",
+				"language",
+				"logo_url",
+				"name",
+				"registration_number",
+				"standalone_credit_note_creation_enabled",
+				"state",
+				"tax_id",
+				"timezone",
+				"zip_code"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/agents/monitoring/analyses": {
+		"GET": {
+			"query": [
+				"created_at__gte",
+				"created_at__lte",
+				"cursor",
+				"customer_id",
+				"customer_id__in",
+				"include_total",
+				"limit",
+				"status"
+			],
+			"body": []
+		}
+	},
+	"/v1/agents/monitoring/analyses/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/oauth/userinfo": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/oauth/authorize": {
+		"GET": {
+			"query": [
+				"audience",
+				"client_id",
+				"code_challenge",
+				"code_challenge_method",
+				"connection",
+				"prompt",
+				"redirect_uri",
+				"resource",
+				"response_type",
+				"scope",
+				"state"
+			],
+			"body": []
+		}
+	},
+	"/oauth/tokens": {
+		"POST": {
+			"query": [],
+			"body": [
+				"client_id",
+				"client_secret",
+				"code",
+				"code_verifier",
+				"grant_type",
+				"redirect_uri",
+				"refresh_token",
+				"resource"
+			]
+		}
+	},
+	"/oauth/revoke": {
+		"POST": {
+			"query": [],
+			"body": [
+				"client_id",
+				"client_secret",
+				"token"
+			]
+		}
+	},
+	"/oauth/register": {
+		"POST": {
+			"query": [],
+			"body": [
+				"client_name",
+				"client_uri",
+				"contacts",
+				"grant_types",
+				"logo_uri",
+				"policy_uri",
+				"redirect_uris",
+				"response_types",
+				"scope",
+				"software_id",
+				"software_version",
+				"token_endpoint_auth_method",
+				"tos_uri"
+			]
+		}
+	},
+	"/oauth/callback": {
+		"GET": {
+			"query": [
+				"code",
+				"error",
+				"error_description",
+				"state"
+			],
+			"body": []
+		}
+	},
+	"/v1/payments": {
+		"POST": {
+			"query": [],
+			"body": [
+				"available_payment_methods",
+				"charging_method",
+				"checkout_session",
+				"custom_note",
+				"customer_id",
+				"items",
+				"payment_method_id",
+				"payment_method_type",
+				"products",
+				"purchase_order",
+				"type"
+			]
+		}
+	},
+	"/v1/price-books": {
+		"GET": {
+			"query": [
+				"skip",
+				"take"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"description",
+				"name",
+				"user_role_ids"
+			]
+		}
+	},
+	"/v1/price-books/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PUT": {
+			"query": [],
+			"body": [
+				"description",
+				"name",
+				"user_role_ids"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/price-books/{id}/products": {
+		"POST": {
+			"query": [],
+			"body": [
+				"product_ids"
+			]
+		}
+	},
+	"/v1/price-books/{id}/products/{productId}": {
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/products/{id}/features": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/products/{id}/features/{code}": {
+		"PUT": {
+			"query": [],
+			"body": [
+				"value"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/quotes": {
+		"GET": {
+			"query": [
+				"crm_opportunity_id",
+				"crm_opportunity_id__contains",
+				"crm_opportunity_id__endWith",
+				"crm_opportunity_id__equals",
+				"crm_opportunity_id__isNotNull",
+				"crm_opportunity_id__isNull",
+				"crm_opportunity_id__not",
+				"crm_opportunity_id__startsWith",
+				"customer_id",
+				"customer_id__contains",
+				"customer_id__endWith",
+				"customer_id__equals",
+				"customer_id__not",
+				"customer_id__startsWith",
+				"id",
+				"id__contains",
+				"id__endWith",
+				"id__equals",
+				"id__not",
+				"id__startsWith",
+				"number",
+				"number__contains",
+				"number__endWith",
+				"number__equals",
+				"number__not",
+				"number__startsWith",
+				"skip",
+				"status",
+				"status__in",
+				"take",
+				"template_id",
+				"template_id__contains",
+				"template_id__endWith",
+				"template_id__equals",
+				"template_id__isNotNull",
+				"template_id__isNull",
+				"template_id__not",
+				"template_id__startsWith",
+				"type",
+				"updated_at",
+				"updated_at__equals",
+				"updated_at__gt",
+				"updated_at__gte",
+				"updated_at__lt",
+				"updated_at__lte",
+				"updated_at__not"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"amount",
+				"automatically_start_subscription",
+				"catalog_version_id",
+				"collect_custom_property_ids",
+				"collect_payment_details",
+				"comments",
+				"contract_clause_ids",
+				"contract_value",
+				"customer_id",
+				"display_discounts_on_total",
+				"display_documents_in_preview",
+				"display_first_invoice_amount",
+				"display_phase_value",
+				"display_price_tiers",
+				"display_quote_value",
+				"display_quote_value_with_tax",
+				"display_subscription_on_update",
+				"display_taxes",
+				"expires_at",
+				"generate_draft_invoices",
+				"invoice",
+				"invoicing_entity_id",
+				"owner_email",
+				"require_tax_id",
+				"status",
+				"subscription",
+				"subscription_update_display",
+				"template_id",
+				"terms"
+			]
+		}
+	},
+	"/v1/quotes/templates": {
+		"GET": {
+			"query": [
+				"id",
+				"id__contains",
+				"id__endWith",
+				"id__equals",
+				"id__not",
+				"id__startsWith",
+				"name",
+				"name__contains",
+				"name__endWith",
+				"name__equals",
+				"name__not",
+				"name__startsWith",
+				"search",
+				"skip",
+				"subscription_template_id",
+				"subscription_template_id__contains",
+				"subscription_template_id__endWith",
+				"subscription_template_id__equals",
+				"subscription_template_id__isNotNull",
+				"subscription_template_id__isNull",
+				"subscription_template_id__not",
+				"subscription_template_id__startsWith",
+				"take"
+			],
+			"body": []
+		}
+	},
+	"/v1/quotes/templates/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/quotes/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PATCH": {
+			"query": [],
+			"body": [
+				"amount",
+				"catalog_version_id",
+				"collect_custom_property_ids",
+				"collect_payment_details",
+				"comments",
+				"contract_clause_ids",
+				"contract_value",
+				"crm_opportunity_id",
+				"display_discounts_on_total",
+				"display_documents_in_preview",
+				"display_first_invoice_amount",
+				"display_phase_value",
+				"display_price_tiers",
+				"display_quote_value",
+				"display_quote_value_with_tax",
+				"display_subscription_on_update",
+				"display_taxes",
+				"expires_at",
+				"generate_draft_invoices",
+				"invoice",
+				"owner_email",
+				"require_tax_id",
+				"subscription",
+				"subscription_update_display",
+				"terms"
+			]
+		}
+	},
+	"/v1/quotes/{id}/duplicate": {
+		"POST": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/quotes/{id}/download": {
+		"GET": {
+			"query": [
+				"locale"
+			],
+			"body": []
+		}
+	},
+	"/v1/quotes/{id}/approve": {
+		"POST": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/quotes/{id}/approvals": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/quotes/{id}/finalize": {
+		"POST": {
+			"query": [],
+			"body": [
+				"requester_comment"
+			]
+		}
+	},
+	"/v1/quotes/{id}/redraft": {
+		"POST": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/quotes/{id}/send": {
+		"POST": {
+			"query": [],
+			"body": [
+				"email",
+				"message"
+			]
+		}
+	},
+	"/v1/quotes/{id}/signers": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PUT": {
+			"query": [],
+			"body": [
+				"signers"
+			]
+		}
+	},
+	"/v1/quotes/{id}/sign": {
+		"POST": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/quotes/{id}/void": {
+		"POST": {
+			"query": [],
+			"body": [
+				"reason"
+			]
+		}
+	},
+	"/v1/quotes/{quoteId}/files/{id}/download": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/subscriptions/refresh": {
+		"POST": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/subscriptions/templates": {
+		"GET": {
+			"query": [
+				"skip",
+				"take"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"description",
+				"name"
+			]
+		}
+	},
+	"/v1/subscriptions/templates/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PATCH": {
+			"query": [],
+			"body": [
+				"description",
+				"name"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/subscriptions/templates/{id}/configurations": {
+		"POST": {
+			"query": [],
+			"body": [
+				"add_tax_to_document",
+				"cancel_at",
+				"cancellation_strategy",
+				"contract_terms",
+				"country",
+				"currency",
+				"custom_properties",
+				"document_name",
+				"generate_document",
+				"generate_draft_invoices",
+				"minimum_invoice_fee",
+				"name",
+				"phases"
+			]
+		}
+	},
+	"/v1/subscriptions/templates/{templateId}/configurations/{id}": {
+		"PUT": {
+			"query": [],
+			"body": [
+				"add_tax_to_document",
+				"cancel_at",
+				"cancellation_strategy",
+				"contract_terms",
+				"country",
+				"currency",
+				"custom_properties",
+				"document_name",
+				"generate_document",
+				"generate_draft_invoices",
+				"minimum_invoice_fee",
+				"name",
+				"phases"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/subscriptions/{id}/update": {
+		"POST": {
+			"query": [],
+			"body": [
+				"application_schedule",
+				"apply_at",
+				"calculation_method",
+				"charge_at",
+				"payload",
+				"payment_schedule",
+				"precision",
+				"refund_method",
+				"type"
+			]
+		}
+	},
+	"/v1/subscriptions/{id}/update-many": {
+		"POST": {
+			"query": [],
+			"body": [
+				"application_schedule",
+				"apply_at",
+				"calculation_method",
+				"charge_at",
+				"payment_schedule",
+				"precision",
+				"refund_method",
+				"updates"
+			]
+		}
+	},
+	"/v1/subscriptions/{id}/cancel": {
+		"POST": {
+			"query": [],
+			"body": [
+				"cancel_at",
+				"pro_rata",
+				"reason",
+				"refund_method"
+			]
+		}
+	},
+	"/v1/subscriptions/{id}/reinstate": {
+		"POST": {
+			"query": [],
+			"body": [
+				"charge_line_items",
+				"invoicing_mode",
+				"reactivate_at"
+			]
+		}
+	},
+	"/v1/subscriptions/{id}/pause": {
+		"POST": {
+			"query": [],
+			"body": [
+				"reactivate_at"
+			]
+		}
+	},
+	"/v1/subscriptions/{id}/activate": {
+		"POST": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/subscriptions/{id}/reactivate": {
+		"POST": {
+			"query": [],
+			"body": [
+				"charge_line_items",
+				"invoicing_mode",
+				"reactivate_at"
+			]
+		}
+	},
+	"/v1/subscriptions/{id}/renew": {
+		"POST": {
+			"query": [],
+			"body": [
+				"up_to"
+			]
+		}
+	},
+	"/v1/subscriptions/{id}/simulate-updates": {
+		"POST": {
+			"query": [],
+			"body": [
+				"application_schedule",
+				"apply_at",
+				"calculation_method",
+				"charge_at",
+				"payment_schedule",
+				"precision",
+				"refund_method",
+				"updates"
+			]
+		}
+	},
+	"/v1/subscriptions/{id}/preview-timeline": {
+		"GET": {
+			"query": [
+				"max_events",
+				"starts_at",
+				"until"
+			],
+			"body": []
+		}
+	},
+	"/v1/subscriptions/{id}/estimates": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v2/subscriptions": {
+		"GET": {
+			"query": [
+				"activation_strategy",
+				"activation_strategy__in",
+				"cancel_at",
+				"cancel_at__equals",
+				"cancel_at__gt",
+				"cancel_at__gte",
+				"cancel_at__isNotNull",
+				"cancel_at__isNull",
+				"cancel_at__lt",
+				"cancel_at__lte",
+				"cancel_at__not",
+				"contract_end__gte",
+				"contract_end__lte",
+				"contract_start__gte",
+				"contract_start__lte",
+				"currency",
+				"currency__contains",
+				"currency__endWith",
+				"currency__equals",
+				"currency__not",
+				"currency__startsWith",
+				"custom_properties",
+				"customer_id",
+				"customer_id__contains",
+				"customer_id__endWith",
+				"customer_id__equals",
+				"customer_id__isNotNull",
+				"customer_id__isNull",
+				"customer_id__not",
+				"customer_id__startsWith",
+				"integration_entity_id",
+				"invoice_drafts",
+				"invoicing_entity_id",
+				"original_quote_id",
+				"original_quote_id__contains",
+				"original_quote_id__endWith",
+				"original_quote_id__equals",
+				"original_quote_id__isNotNull",
+				"original_quote_id__isNull",
+				"original_quote_id__not",
+				"original_quote_id__startsWith",
+				"plan_id",
+				"plan_id__contains",
+				"plan_id__endWith",
+				"plan_id__equals",
+				"plan_id__isNotNull",
+				"plan_id__isNull",
+				"plan_id__not",
+				"plan_id__startsWith",
+				"purchase_order",
+				"purchase_order__contains",
+				"purchase_order__endWith",
+				"purchase_order__equals",
+				"purchase_order__isNotNull",
+				"purchase_order__isNull",
+				"purchase_order__not",
+				"purchase_order__startsWith",
+				"renew_automatically",
+				"skip",
+				"status",
+				"status__in",
+				"take",
+				"updated_at",
+				"updated_at__equals",
+				"updated_at__gt",
+				"updated_at__gte",
+				"updated_at__lt",
+				"updated_at__lte",
+				"updated_at__not"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"activation_strategy",
+				"add_tax_to_document",
+				"available_payment_method_types",
+				"billing_cycle_alignment",
+				"cancel_at",
+				"cancellation_amount",
+				"cancellation_refund_method",
+				"cancellation_strategy",
+				"checkout_session",
+				"commitment_interval",
+				"contract_end",
+				"contract_start",
+				"contract_terms",
+				"coupons",
+				"create_setup_phase",
+				"crm_opportunity_id",
+				"custom_properties",
+				"customer_id",
+				"display_shipping_details",
+				"do_not_charge_subscription",
+				"document_name",
+				"generate_document",
+				"generate_draft_invoices",
+				"initial_billing_at",
+				"invoice_custom_note",
+				"invoice_schedule",
+				"invoicing_entity_id",
+				"minimum_invoice_fee",
+				"name",
+				"payment_method_strategy",
+				"phases",
+				"plan_id",
+				"products",
+				"properties",
+				"purchase_order",
+				"renew_automatically",
+				"renew_for",
+				"shipping_address_id",
+				"starts_at",
+				"tax_only",
+				"template_configuration_id",
+				"template_id",
+				"trial"
+			]
+		}
+	},
+	"/v2/subscriptions/transitions": {
+		"GET": {
+			"query": [
+				"base_subscription_id",
+				"base_subscription_id__contains",
+				"base_subscription_id__endWith",
+				"base_subscription_id__equals",
+				"base_subscription_id__not",
+				"base_subscription_id__startsWith",
+				"skip",
+				"source_subscription_id",
+				"source_subscription_id__contains",
+				"source_subscription_id__endWith",
+				"source_subscription_id__equals",
+				"source_subscription_id__not",
+				"source_subscription_id__startsWith",
+				"status",
+				"status__in",
+				"take",
+				"target_subscription_id",
+				"target_subscription_id__contains",
+				"target_subscription_id__endWith",
+				"target_subscription_id__equals",
+				"target_subscription_id__isNotNull",
+				"target_subscription_id__isNull",
+				"target_subscription_id__not",
+				"target_subscription_id__startsWith",
+				"transition_date",
+				"transition_date__equals",
+				"transition_date__gt",
+				"transition_date__gte",
+				"transition_date__isNotNull",
+				"transition_date__isNull",
+				"transition_date__lt",
+				"transition_date__lte",
+				"transition_date__not",
+				"transitioned_at",
+				"transitioned_at__equals",
+				"transitioned_at__gt",
+				"transitioned_at__gte",
+				"transitioned_at__isNotNull",
+				"transitioned_at__isNull",
+				"transitioned_at__lt",
+				"transitioned_at__lte",
+				"transitioned_at__not"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"application_schedule",
+				"billing_cycle_transition_method",
+				"calculation_method",
+				"name",
+				"source_subscription_id",
+				"target_subscription",
+				"transition_date"
+			]
+		}
+	},
+	"/v2/subscriptions/{id}": {
+		"GET": {
+			"query": [
+				"include_live_billing"
+			],
+			"body": []
+		},
+		"PUT": {
+			"query": [],
+			"body": [
+				"add_tax_to_document",
+				"cancel_at",
+				"contract_end",
+				"contract_start",
+				"contract_terms",
+				"contract_value",
+				"crm_opportunity_id",
+				"custom_properties",
+				"display_shipping_details",
+				"do_not_charge_subscription",
+				"document_name",
+				"estimated_arr",
+				"generate_document",
+				"generate_draft_invoices",
+				"initial_billing_at",
+				"invoice_custom_note",
+				"invoice_schedule",
+				"minimum_invoice_fee",
+				"name",
+				"phases",
+				"properties",
+				"purchase_order",
+				"shipping_address_id",
+				"starts_at",
+				"tax_only"
+			]
+		}
+	},
+	"/v2/subscriptions/{id}/phases": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v2/subscriptions/{id}/phases/{phaseId}": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v2/subscriptions/{id}/refresh-seat-products": {
+		"POST": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v2/subscriptions/{id}/next-phase": {
+		"POST": {
+			"query": [],
+			"body": [
+				"transition_date"
+			]
+		}
+	},
+	"/v2/subscriptions/transitions/preview": {
+		"POST": {
+			"query": [],
+			"body": [
+				"application_schedule",
+				"billing_cycle_transition_method",
+				"calculation_method",
+				"name",
+				"source_subscription_id",
+				"target_subscription",
+				"transition_date",
+				"transition_id"
+			]
+		}
+	},
+	"/v2/subscriptions/transitions/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v2/subscriptions/transitions/{id}/cancel": {
+		"POST": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/taxes/rates": {
+		"GET": {
+			"query": [
+				"description",
+				"description__contains",
+				"description__endWith",
+				"description__equals",
+				"description__isNotNull",
+				"description__isNull",
+				"description__not",
+				"description__startsWith",
+				"id",
+				"id__contains",
+				"id__endWith",
+				"id__equals",
+				"id__not",
+				"id__startsWith",
+				"invoicing_entity_id",
+				"invoicing_entity_id__contains",
+				"invoicing_entity_id__endWith",
+				"invoicing_entity_id__equals",
+				"invoicing_entity_id__not",
+				"invoicing_entity_id__startsWith",
+				"name",
+				"name__contains",
+				"name__endWith",
+				"name__equals",
+				"name__isNotNull",
+				"name__isNull",
+				"name__not",
+				"name__startsWith",
+				"skip",
+				"take"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"code",
+				"country",
+				"description",
+				"invoicing_entity_id",
+				"name",
+				"rate",
+				"rate_class",
+				"scope",
+				"type"
+			]
+		}
+	},
+	"/v1/taxes/rates/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PATCH": {
+			"query": [],
+			"body": [
+				"code",
+				"country",
+				"description",
+				"name",
+				"rate",
+				"scope",
+				"type"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/apps": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"callbacks",
+				"description",
+				"logo_uri",
+				"name"
+			]
+		}
+	},
+	"/v1/apps/{id}": {
+		"PUT": {
+			"query": [],
+			"body": [
+				"callbacks",
+				"description",
+				"logo_uri",
+				"name"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/transactions": {
+		"GET": {
+			"query": [
+				"skip",
+				"take"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"amount",
+				"bank_account_id",
+				"customer_id",
+				"date",
+				"original_transaction_id",
+				"payment_method_type",
+				"reference",
+				"type"
+			]
+		}
+	},
+	"/v1/transactions/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/transactions/{id}/refund": {
+		"POST": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/users/roles": {
+		"GET": {
+			"query": [
+				"skip",
+				"take"
+			],
+			"body": []
+		}
+	},
+	"/v1/users/roles/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/users": {
+		"GET": {
+			"query": [
+				"email",
+				"email__contains",
+				"email__endWith",
+				"email__equals",
+				"email__not",
+				"email__startsWith",
+				"first_name",
+				"first_name__contains",
+				"first_name__endWith",
+				"first_name__equals",
+				"first_name__isNotNull",
+				"first_name__isNull",
+				"first_name__not",
+				"first_name__startsWith",
+				"last_name",
+				"last_name__contains",
+				"last_name__endWith",
+				"last_name__equals",
+				"last_name__isNotNull",
+				"last_name__isNull",
+				"last_name__not",
+				"last_name__startsWith",
+				"skip",
+				"take"
+			],
+			"body": []
+		}
+	},
+	"/v1/users/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/subscriptions/{id}/arr-history": {
+		"GET": {
+			"query": [
+				"cursor",
+				"limit",
+				"occurred_at__gte",
+				"occurred_at__lte"
+			],
+			"body": []
+		}
+	},
+	"/v1/customers/{id}/arr-history": {
+		"GET": {
+			"query": [
+				"cursor",
+				"limit",
+				"occurred_at__gte",
+				"occurred_at__lte"
+			],
+			"body": []
+		}
+	},
+	"/v1/subscriptions/{id}/valuation": {
+		"GET": {
+			"query": [
+				"granularity"
+			],
+			"body": []
+		}
+	},
+	"/v1/quotes/{id}/valuation": {
+		"GET": {
+			"query": [
+				"granularity"
+			],
+			"body": []
+		}
+	},
+	"/v1/customers/{id}/valuation": {
+		"GET": {
+			"query": [
+				"granularity"
+			],
+			"body": []
+		}
+	},
+	"/v1/wallets/settings": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PATCH": {
+			"query": [],
+			"body": [
+				"allow_free_credits",
+				"allow_topup_on_portal",
+				"enabled",
+				"product_ids"
+			]
+		}
+	},
+	"/v2/wallets": {
+		"GET": {
+			"query": [
+				"customer_id",
+				"skip",
+				"take"
+			],
+			"body": []
+		}
+	},
+	"/v1/wallets": {
+		"POST": {
+			"query": [],
+			"body": [
+				"auto_load_amount",
+				"auto_load_interval",
+				"auto_load_next_date",
+				"auto_load_reset",
+				"auto_load_threshold",
+				"auto_load_type",
+				"customer_id",
+				"is_auto_load_enabled",
+				"low_projected_balance_threshold"
+			]
+		}
+	},
+	"/v1/wallets/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PUT": {
+			"query": [],
+			"body": [
+				"auto_load_amount",
+				"auto_load_interval",
+				"auto_load_next_date",
+				"auto_load_reset",
+				"auto_load_threshold",
+				"auto_load_type",
+				"is_auto_load_enabled",
+				"low_projected_balance_threshold",
+				"state"
+			]
+		}
+	},
+	"/v1/wallets/{id}/load": {
+		"POST": {
+			"query": [],
+			"body": [
+				"amount",
+				"amount_free",
+				"bank_account_id",
+				"comment",
+				"date",
+				"document_status",
+				"invoice_id",
+				"invoice_line_item_ids",
+				"reference",
+				"transaction_id",
+				"type"
+			]
+		}
+	},
+	"/v1/wallets/{id}/transactions": {
+		"GET": {
+			"query": [
+				"amount",
+				"comment",
+				"invoice_id",
+				"skip",
+				"take",
+				"type"
+			],
+			"body": []
+		}
+	},
+	"/v1/wallets/{id}/transactions/{transactionId}/revert": {
+		"POST": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/webhooks/endpoints": {
+		"GET": {
+			"query": [
+				"iterator",
+				"limit"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"description",
+				"event_types",
+				"rate_limit",
+				"secret",
+				"url"
+			]
+		}
+	},
+	"/v1/webhooks/endpoints/{id}": {
+		"GET": {
+			"query": [],
+			"body": []
+		},
+		"PUT": {
+			"query": [],
+			"body": [
+				"description",
+				"event_types",
+				"rate_limit",
+				"url"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/webhooks/messages": {
+		"GET": {
+			"query": [
+				"after",
+				"before",
+				"event_types",
+				"iterator",
+				"limit"
+			],
+			"body": []
+		}
+	},
+	"/v1/ai/billing/consume": {
+		"POST": {
+			"query": [],
+			"body": [
+				"agent",
+				"customer",
+				"idempotency_key",
+				"usage"
+			]
+		}
+	},
+	"/v1/ai/billing/check": {
+		"POST": {
+			"query": [],
+			"body": [
+				"action",
+				"agent",
+				"customer"
+			]
+		}
+	},
+	"/v1/ai/billing/snapshot": {
+		"GET": {
+			"query": [
+				"agent",
+				"customer"
+			],
+			"body": []
+		}
+	},
+	"/v1/ai/calls": {
+		"POST": {
+			"query": [],
+			"body": []
+		}
+	},
+	"/v1/events": {
+		"GET": {
+			"query": [
+				"customer_id",
+				"event_type",
+				"order",
+				"record",
+				"record_id__in",
+				"skip",
+				"sort",
+				"take",
+				"timestamp_gte",
+				"timestamp_lte"
+			],
+			"body": []
+		},
+		"POST": {
+			"query": [],
+			"body": [
+				"customer_id",
+				"event_type",
+				"record",
+				"timestamp"
+			]
+		},
+		"DELETE": {
+			"query": [],
+			"body": [
+				"customer_id",
+				"event_type",
+				"matching",
+				"record_ids"
+			]
+		}
+	},
+	"/v1/events/batch": {
+		"POST": {
+			"query": [],
+			"body": []
+		}
+	}
+}

@@ -1,0 +1,19 @@
+{
+	"node": "n8n-nodes-hyperline.hyperline",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Finance & Accounting", "Sales"],
+	"alias": ["Billing", "Subscriptions", "Invoices", "Quotes", "Usage-based billing", "CPQ"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://docs.hyperline.co/developers/getting-started"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://docs.hyperline.co/api-reference"
+			}
+		]
+	}
+}

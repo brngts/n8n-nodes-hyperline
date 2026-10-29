@@ -1,0 +1,63 @@
+{
+	"name": "n8n-nodes-hyperline",
+	"version": "0.1.0",
+	"description": "n8n community node for Hyperline: customers, subscriptions, invoices, quotes, products, usage events and webhooks",
+	"license": "MIT",
+	"homepage": "https://github.com/brngts/n8n-nodes-hyperline#readme",
+	"bugs": {
+		"url": "https://github.com/brngts/n8n-nodes-hyperline/issues"
+	},
+	"keywords": [
+		"n8n-community-node-package",
+		"hyperline",
+		"billing",
+		"subscriptions",
+		"invoicing",
+		"usage-based-billing"
+	],
+	"author": {
+		"name": "Brajan Gatys",
+		"email": "brajan.gatys@n8n.io"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/brngts/n8n-nodes-hyperline.git"
+	},
+	"scripts": {
+		"build": "n8n-node build",
+		"build:watch": "tsc --watch",
+		"dev": "n8n-node dev",
+		"lint": "n8n-node lint",
+		"lint:fix": "n8n-node lint --fix",
+		"test": "vitest run",
+		"sync:openapi": "node scripts/sync-openapi.mjs",
+		"release": "n8n-node release",
+		"prepublishOnly": "n8n-node prerelease"
+	},
+	"files": [
+		"dist"
+	],
+	"n8n": {
+		"n8nNodesApiVersion": 1,
+		"strict": true,
+		"credentials": [
+			"dist/credentials/HyperlineApi.credentials.js"
+		],
+		"nodes": [
+			"dist/nodes/Hyperline/Hyperline.node.js",
+			"dist/nodes/HyperlineTrigger/HyperlineTrigger.node.js"
+		]
+	},
+	"devDependencies": {
+		"@n8n/node-cli": "^0.54.5",
+		"eslint": "9.32.0",
+		"n8n-workflow": "*",
+		"prettier": "3.6.2",
+		"release-it": "^21.1.0",
+		"typescript": "5.9.2",
+		"vitest": "^5.0.5"
+	},
+	"peerDependencies": {
+		"n8n-workflow": "*"
+	}
+}

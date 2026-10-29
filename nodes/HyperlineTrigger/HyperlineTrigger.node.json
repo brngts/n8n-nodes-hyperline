@@ -1,0 +1,19 @@
+{
+	"node": "n8n-nodes-hyperline.hyperlineTrigger",
+	"nodeVersion": "1.0",
+	"codexVersion": "1.0",
+	"categories": ["Finance & Accounting", "Sales"],
+	"alias": ["Billing", "Webhook", "Subscriptions", "Invoices", "Quotes"],
+	"resources": {
+		"credentialDocumentation": [
+			{
+				"url": "https://docs.hyperline.co/developers/getting-started"
+			}
+		],
+		"primaryDocumentation": [
+			{
+				"url": "https://docs.hyperline.co/developers/webhooks"
+			}
+		]
+	}
+}
