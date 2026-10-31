@@ -243,25 +243,30 @@ describe('Hyperline node description', () => {
 });
 
 describe('Hyperline Trigger node description', () => {
-	it('is a webhook trigger with a full lifecycle', async () => {
+	it('is a plain webhook trigger that never talks to the Hyperline API', async () => {
 		const { HyperlineTrigger } = await import('../nodes/HyperlineTrigger/HyperlineTrigger.node');
 		const trigger = new HyperlineTrigger();
 		expect(trigger.description.group).toEqual(['trigger']);
 		expect(trigger.description.inputs).toEqual([]);
 		expect(trigger.description.webhooks?.[0]?.httpMethod).toBe('POST');
-		expect(Object.keys(trigger.webhookMethods.default).sort()).toEqual([
-			'checkExists',
-			'create',
-			'delete',
+		// The webhook is set up by hand in Hyperline, so there is nothing to register or remove.
+		expect('webhookMethods' in trigger).toBe(false);
+		expect(trigger.description.credentials?.map((credential) => credential.name)).toEqual([
+			'hyperlineWebhookApi',
 		]);
 	});
 
-	it('only manages webhook endpoints through documented routes', () => {
-		expect(documented['/v1/webhooks/endpoints']).toHaveProperty('GET');
-		expect(documented['/v1/webhooks/endpoints'].POST.body).toEqual(
-			expect.arrayContaining(['url', 'description', 'event_types', 'secret']),
-		);
-		expect(documented['/v1/webhooks/endpoints/{id}']).toHaveProperty('PUT');
-		expect(documented['/v1/webhooks/endpoints/{id}']).toHaveProperty('DELETE');
+	it('does not offer an event picker', async () => {
+		const { HyperlineTrigger } = await import('../nodes/HyperlineTrigger/HyperlineTrigger.node');
+		const names = new HyperlineTrigger().description.properties.map((property) => property.name);
+		expect(names).not.toContain('events');
+	});
+
+	it('only asks for the signing secret when signatures are checked', async () => {
+		const { HyperlineTrigger } = await import('../nodes/HyperlineTrigger/HyperlineTrigger.node');
+		const { properties, credentials } = new HyperlineTrigger().description;
+		const authentication = properties.find((property) => property.name === 'authentication');
+		expect(authentication?.default).toBe('signingSecret');
+		expect(credentials?.[0]?.displayOptions?.show).toEqual({ authentication: ['signingSecret'] });
 	});
 });

@@ -100,7 +100,7 @@ function readHyperlineMessage(error: unknown): string | undefined {
 }
 
 /**
- * Rethrows a failed request from the trigger or list search as an error that
+ * Rethrows a failed request from list search as an error that
  * leads with Hyperline's own message instead of n8n's generic one.
  */
 export function toHyperlineError(node: INode, error: unknown): NodeApiError {

@@ -1,6 +1,5 @@
 import type {
 	IDataObject,
-	IHookFunctions,
 	IHttpRequestMethods,
 	IHttpRequestOptions,
 	ILoadOptionsFunctions,
@@ -10,11 +9,11 @@ import { toHyperlineError } from './errors';
 
 /**
  * Authenticated request helper for code paths outside declarative routing
- * (list search and the trigger's webhook lifecycle). The host follows the
- * credential's Environment, the same way routed operations resolve it.
+ * (list search). The host follows the credential's Environment, the same way
+ * routed operations resolve it.
  */
 export async function hyperlineApiRequest(
-	this: ILoadOptionsFunctions | IHookFunctions,
+	this: ILoadOptionsFunctions,
 	method: IHttpRequestMethods,
 	endpoint: string,
 	qs: IDataObject = {},
