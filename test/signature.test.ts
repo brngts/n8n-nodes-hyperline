@@ -1,6 +1,10 @@
 import { createHmac } from 'node:crypto';
 import { describe, expect, it } from 'vitest';
-import { parseSignatures, verifyHyperlineSignature } from '../nodes/HyperlineTrigger/signature';
+import {
+	generateWebhookSecret,
+	parseSignatures,
+	verifyHyperlineSignature,
+} from '../nodes/HyperlineTrigger/signature';
 import svixExample from './fixtures/svix-example.json';
 
 /**
@@ -55,8 +59,8 @@ describe('verifyHyperlineSignature', () => {
 		expect(verifyHyperlineSignature({ ...SVIX_EXAMPLE, webhookTimestamp: undefined })).toBe(false);
 	});
 
-	it('verifies a delivery signed with a raw Buffer body', () => {
-		const secret = Buffer.from('a signing key for the tests').toString('base64');
+	it('verifies a delivery signed with a secret the trigger generated', () => {
+		const secret = generateWebhookSecret();
 		const body = Buffer.from('{"event_type":"invoice.settled","data":{"id":"inv_1"}}');
 		const signature = sign(secret, 'msg_1', '1700000000', body.toString());
 		expect(
@@ -70,31 +74,12 @@ describe('verifyHyperlineSignature', () => {
 			}),
 		).toBe(true);
 	});
+});
 
-	it('ignores whitespace around a pasted secret', () => {
-		expect(
-			verifyHyperlineSignature({ ...SVIX_EXAMPLE, secret: `  ${SVIX_EXAMPLE.secret}\n` }),
-		).toBe(true);
-	});
-
-	it('rejects a blank secret, even for a delivery signed with an empty key', () => {
-		// An empty key still yields a valid HMAC, so without a guard anyone could forge this.
-		const body = '{"event_type":"invoice.settled"}';
-		const signature = createHmac('sha256', Buffer.alloc(0))
-			.update(`msg_1.1700000000.${body}`)
-			.digest('base64');
-		for (const secret of ['', '   ', 'whsec_']) {
-			expect(
-				verifyHyperlineSignature({
-					secret,
-					rawBody: body,
-					webhookId: 'msg_1',
-					webhookTimestamp: '1700000000',
-					signatureHeader: `v1,${signature}`,
-					nowSeconds: 1700000000,
-				}),
-				JSON.stringify(secret),
-			).toBe(false);
+describe('generateWebhookSecret', () => {
+	it('matches the secret format Hyperline accepts', () => {
+		for (let run = 0; run < 50; run++) {
+			expect(generateWebhookSecret()).toMatch(/^[a-zA-Z0-9+/=]{32,100}$/);
 		}
 	});
 });

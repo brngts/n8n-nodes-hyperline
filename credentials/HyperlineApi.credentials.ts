@@ -44,7 +44,7 @@ export class HyperlineApi implements ICredentialType {
 			default: '',
 			required: true,
 			description:
-				'Create a key in Hyperline under Settings > API > New API key, with read and write scopes, in the same environment you picked above.',
+				'Create a key in Hyperline under Settings > API > New API key, with read and write scopes, in the same environment you picked above. The Hyperline Trigger also needs access to webhooks.',
 		},
 	];
 

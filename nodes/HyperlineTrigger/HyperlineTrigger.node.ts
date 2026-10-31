@@ -1,19 +1,71 @@
 import {
 	NodeConnectionTypes,
-	type ICredentialsDecrypted,
-	type ICredentialTestFunctions,
 	type IDataObject,
-	type INodeCredentialTestResult,
+	type IHookFunctions,
 	type INodeType,
 	type INodeTypeDescription,
 	type IWebhookFunctions,
 	type IWebhookResponseData,
 } from 'n8n-workflow';
-import { signingSecretProblem, verifyHyperlineSignature } from './signature';
+import { HYPERLINE_CREDENTIAL_NAME, PAGE_SIZE } from '../Hyperline/shared/constants';
+import { hyperlineApiRequest } from '../Hyperline/shared/transport';
+import { WEBHOOK_EVENT_TYPES } from './events';
+import { generateWebhookSecret, verifyHyperlineSignature } from './signature';
 
-// Hyperline webhook endpoints are created by hand in Hyperline, so this node has nothing to
-// register, look up or remove there. The rule below assumes a node that manages its own endpoint.
-// eslint-disable-next-line @n8n/community-nodes/webhook-lifecycle-complete
+const ALL_EVENTS = '*';
+
+const WEBHOOK_DESCRIPTION = 'n8n workflow trigger';
+
+type WebhookEndpoint = {
+	id: string;
+	url: string;
+	event_types?: string[] | null;
+};
+
+type WebhookEndpointList = {
+	data: WebhookEndpoint[];
+	meta?: { iterator?: string | null };
+};
+
+/** Upper bound for the endpoint listing loop, so a misbehaving API cannot keep us busy forever. */
+const MAX_ENDPOINT_PAGES = 20;
+
+/** "All Events" replaces any other selection; Hyperline sends everything when no filter is set. */
+function eventTypesFilter(selected: unknown): string[] | undefined {
+	const events = Array.isArray(selected)
+		? selected.filter((event): event is string => typeof event === 'string')
+		: [];
+	if (events.length === 0 || events.includes(ALL_EVENTS)) return undefined;
+	return [...new Set(events)].sort();
+}
+
+function sameEventTypes(a: string[] | null | undefined, b: string[] | undefined): boolean {
+	const left = a && a.length > 0 ? [...a].sort() : undefined;
+	if (left === undefined || b === undefined) return left === b;
+	return left.length === b.length && left.every((value, index) => value === b[index]);
+}
+
+async function findEndpointByUrl(
+	this: IHookFunctions,
+	url: string,
+): Promise<WebhookEndpoint | undefined> {
+	let iterator: string | undefined;
+	for (let page = 0; page < MAX_ENDPOINT_PAGES; page++) {
+		const response: WebhookEndpointList = await hyperlineApiRequest.call(
+			this,
+			'GET',
+			'/v1/webhooks/endpoints',
+			{ limit: PAGE_SIZE, iterator },
+		);
+		const match = (response.data ?? []).find((endpoint) => endpoint.url === url);
+		if (match) return match;
+		const next = response.meta?.iterator;
+		if (!next || next === iterator || (response.data ?? []).length === 0) return undefined;
+		iterator = next;
+	}
+	return undefined;
+}
+
 export class HyperlineTrigger implements INodeType {
 	description: INodeTypeDescription = {
 		displayName: 'Hyperline Trigger',
@@ -21,9 +73,8 @@ export class HyperlineTrigger implements INodeType {
 		icon: { light: 'file:../../icons/hyperline.svg', dark: 'file:../../icons/hyperline.dark.svg' },
 		group: ['trigger'],
 		version: 1,
-		subtitle:
-			'={{$parameter["authentication"] === "none" ? "On Hyperline event (unverified)" : "On Hyperline event"}}',
-		description: 'Starts the workflow when Hyperline sends a webhook event',
+		subtitle: '={{$parameter["events"].includes("*") ? "All events" : $parameter["events"].join(", ")}}',
+		description: 'Starts the workflow when something happens in Hyperline',
 		defaults: {
 			name: 'Hyperline Trigger',
 		},
@@ -31,15 +82,8 @@ export class HyperlineTrigger implements INodeType {
 		outputs: [NodeConnectionTypes.Main],
 		credentials: [
 			{
-				// A string literal, not a constant: the lint rule that looks for `testedBy` cannot resolve constants.
-				name: 'hyperlineWebhookApi',
+				name: HYPERLINE_CREDENTIAL_NAME,
 				required: true,
-				testedBy: 'hyperlineWebhookApiTest',
-				displayOptions: {
-					show: {
-						authentication: ['signingSecret'],
-					},
-				},
 			},
 		],
 		webhooks: [
@@ -52,30 +96,20 @@ export class HyperlineTrigger implements INodeType {
 		],
 		properties: [
 			{
-				displayName:
-					"In Hyperline, add a webhook endpoint with this node's webhook URL and choose which events to send. Use the Test URL while building and the Production URL once the workflow is active.",
-				name: 'setupNotice',
-				type: 'notice',
-				default: '',
-			},
-			{
-				displayName: 'Authentication',
-				name: 'authentication',
-				type: 'options',
+				displayName: 'Events',
+				name: 'events',
+				type: 'multiOptions',
 				options: [
 					{
-						name: 'None',
-						value: 'none',
-						description: 'Accept every request sent to the webhook URL',
+						name: 'All Events',
+						value: ALL_EVENTS,
+						description: 'Every event type, including ones Hyperline adds later',
 					},
-					{
-						name: 'Signing Secret',
-						value: 'signingSecret',
-						description: "Only accept deliveries signed with the endpoint's signing secret",
-					},
+					...WEBHOOK_EVENT_TYPES,
 				],
-				default: 'signingSecret',
-				description: 'Whether to check that deliveries really come from Hyperline',
+				default: [],
+				required: true,
+				description: 'Which Hyperline events start the workflow',
 			},
 			{
 				displayName: 'Options',
@@ -98,44 +132,109 @@ export class HyperlineTrigger implements INodeType {
 		],
 	};
 
-	methods = {
-		credentialTest: {
-			// There is no API to call for a signing secret, so this only catches an empty or garbled paste.
-			async hyperlineWebhookApiTest(
-				this: ICredentialTestFunctions,
-				credential: ICredentialsDecrypted,
-			): Promise<INodeCredentialTestResult> {
-				const problem = signingSecretProblem(credential.data?.signingSecret);
-				return problem === undefined
-					? {
-							status: 'OK',
-							message: 'The secret looks valid. It is checked when Hyperline delivers an event.',
-						}
-					: { status: 'Error', message: problem };
+	webhookMethods = {
+		default: {
+			async checkExists(this: IHookFunctions): Promise<boolean> {
+				const webhookUrl = this.getNodeWebhookUrl('default');
+				if (!webhookUrl) return false;
+				const webhookData = this.getWorkflowStaticData('node');
+				const eventTypes = eventTypesFilter(this.getNodeParameter('events'));
+
+				const existing = await findEndpointByUrl.call(this, webhookUrl);
+				if (!existing) return false;
+
+				// Hyperline never returns an endpoint's secret, so an endpoint this node did
+				// not create (or whose secret was lost) cannot be verified. Replace it.
+				if (existing.id !== webhookData.webhookId || typeof webhookData.webhookSecret !== 'string') {
+					await hyperlineApiRequest.call(this, 'DELETE', `/v1/webhooks/endpoints/${existing.id}`);
+					return false;
+				}
+
+				if (sameEventTypes(existing.event_types, eventTypes)) return true;
+
+				// An update without `event_types` may keep the old filter, so switching to
+				// All Events recreates the endpoint instead.
+				if (eventTypes === undefined) {
+					await hyperlineApiRequest.call(this, 'DELETE', `/v1/webhooks/endpoints/${existing.id}`);
+					return false;
+				}
+				await hyperlineApiRequest.call(
+					this,
+					'PUT',
+					`/v1/webhooks/endpoints/${existing.id}`,
+					{},
+					{ url: webhookUrl, description: WEBHOOK_DESCRIPTION, event_types: eventTypes },
+				);
+				return true;
+			},
+
+			async create(this: IHookFunctions): Promise<boolean> {
+				const webhookUrl = this.getNodeWebhookUrl('default');
+				const webhookData = this.getWorkflowStaticData('node');
+				const eventTypes = eventTypesFilter(this.getNodeParameter('events'));
+				const secret = generateWebhookSecret();
+
+				const response: WebhookEndpoint = await hyperlineApiRequest.call(
+					this,
+					'POST',
+					'/v1/webhooks/endpoints',
+					{},
+					{
+						url: webhookUrl,
+						description: WEBHOOK_DESCRIPTION,
+						event_types: eventTypes,
+						secret,
+					},
+				);
+
+				if (!response.id) return false;
+				webhookData.webhookId = response.id;
+				webhookData.webhookSecret = secret;
+				return true;
+			},
+
+			async delete(this: IHookFunctions): Promise<boolean> {
+				const webhookData = this.getWorkflowStaticData('node');
+				if (typeof webhookData.webhookId !== 'string') return true;
+
+				try {
+					await hyperlineApiRequest.call(
+						this,
+						'DELETE',
+						`/v1/webhooks/endpoints/${webhookData.webhookId}`,
+					);
+				} catch (error) {
+					this.logger.warn(`Could not delete Hyperline webhook endpoint ${webhookData.webhookId}`, {
+						error: error instanceof Error ? error.message : String(error),
+					});
+					return false;
+				}
+
+				delete webhookData.webhookId;
+				delete webhookData.webhookSecret;
+				return true;
 			},
 		},
 	};
 
 	async webhook(this: IWebhookFunctions): Promise<IWebhookResponseData> {
+		const request = this.getRequestObject();
+		const secret = this.getWorkflowStaticData('node').webhookSecret;
 		const headers = this.getHeaderData();
 
-		if (this.getNodeParameter('authentication') === 'signingSecret') {
-			const { signingSecret } = await this.getCredentials('hyperlineWebhookApi');
+		const isValid =
+			typeof secret === 'string' &&
+			verifyHyperlineSignature({
+				secret,
+				rawBody: request.rawBody ?? '',
+				webhookId: headers['webhook-id'],
+				webhookTimestamp: headers['webhook-timestamp'],
+				signatureHeader: headers['webhook-signature'],
+			});
 
-			const isValid =
-				typeof signingSecret === 'string' &&
-				verifyHyperlineSignature({
-					secret: signingSecret,
-					rawBody: this.getRequestObject().rawBody ?? '',
-					webhookId: headers['webhook-id'],
-					webhookTimestamp: headers['webhook-timestamp'],
-					signatureHeader: headers['webhook-signature'],
-				});
-
-			if (!isValid) {
-				this.getResponseObject().status(401).send('Invalid signature').end();
-				return { noWebhookResponse: true };
-			}
+		if (!isValid) {
+			this.getResponseObject().status(401).send('Invalid signature').end();
+			return { noWebhookResponse: true };
 		}
 
 		const body: IDataObject = this.getBodyData();

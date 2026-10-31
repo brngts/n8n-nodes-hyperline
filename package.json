@@ -45,8 +45,7 @@
 		"n8nNodesApiVersion": 1,
 		"strict": true,
 		"credentials": [
-			"dist/credentials/HyperlineApi.credentials.js",
-			"dist/credentials/HyperlineWebhookApi.credentials.js"
+			"dist/credentials/HyperlineApi.credentials.js"
 		],
 		"nodes": [
 			"dist/nodes/Hyperline/Hyperline.node.js",

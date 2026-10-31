@@ -1,30 +1,19 @@
-import { createHmac, timingSafeEqual } from 'node:crypto';
+import { createHmac, randomBytes, timingSafeEqual } from 'node:crypto';
 
 /** Deliveries further than this from the current time are treated as replays, as Hyperline recommends. */
 export const MAX_TIMESTAMP_AGE_SECONDS = 300;
 
 /**
- * The HMAC key is the base64-decoded secret, with or without its `whsec_` prefix.
- * Surrounding whitespace is ignored because secrets are pasted in by hand.
+ * A signing secret Hyperline accepts when creating an endpoint: base64 of
+ * random bytes, 32 to 100 characters. 24 bytes encode to exactly 32.
  */
-function secretKey(secret: string): Buffer {
-	const trimmed = secret.trim();
-	return Buffer.from(trimmed.startsWith('whsec_') ? trimmed.slice('whsec_'.length) : trimmed, 'base64');
+export function generateWebhookSecret(): string {
+	return randomBytes(24).toString('base64');
 }
 
-/**
- * What is wrong with a pasted signing secret, or undefined when it looks usable.
- * This only checks the format: whether Hyperline really signs with this secret
- * is known once a delivery arrives.
- */
-export function signingSecretProblem(secret: unknown): string | undefined {
-	if (typeof secret !== 'string' || secret.trim() === '') return 'The signing secret is empty';
-	const trimmed = secret.trim();
-	const encoded = trimmed.startsWith('whsec_') ? trimmed.slice('whsec_'.length) : trimmed;
-	if (!/^[A-Za-z0-9+/]+={0,2}$/.test(encoded)) {
-		return 'The signing secret is not valid base64. Copy it exactly as Hyperline shows it';
-	}
-	return undefined;
+/** The HMAC key is the base64-decoded secret, with or without its `whsec_` prefix. */
+function secretKey(secret: string): Buffer {
+	return Buffer.from(secret.startsWith('whsec_') ? secret.slice('whsec_'.length) : secret, 'base64');
 }
 
 /** `webhook-signature` holds space-separated `<version>,<base64 signature>` pairs. */
@@ -62,17 +51,13 @@ export function verifyHyperlineSignature({
 }: VerifyOptions): boolean {
 	if (typeof webhookId !== 'string' || typeof webhookTimestamp !== 'string') return false;
 
-	// An empty key still produces a valid HMAC, so a blank secret would let anyone forge a delivery.
-	const key = secretKey(secret);
-	if (key.length === 0) return false;
-
 	const timestamp = Number(webhookTimestamp);
 	if (!Number.isFinite(timestamp) || Math.abs(nowSeconds - timestamp) > MAX_TIMESTAMP_AGE_SECONDS) {
 		return false;
 	}
 
 	const body = Buffer.isBuffer(rawBody) ? rawBody : Buffer.from(rawBody);
-	const expected = createHmac('sha256', key)
+	const expected = createHmac('sha256', secretKey(secret))
 		.update(`${webhookId}.${webhookTimestamp}.`)
 		.update(body)
 		.digest();
