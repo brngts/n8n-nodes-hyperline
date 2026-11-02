@@ -1,16 +1,20 @@
 import type { INodeProperties } from 'n8n-workflow';
 import {
+	binaryInputProperty,
 	binaryPropertyName,
 	bodyOption,
 	byDisplayName,
 	customerBodyLocator,
+	idParameter,
 	jsonBodyProperty,
+	jsonParameter,
 	paginationProperties,
 	queryOption,
 	recordLocator,
 } from '../../shared/descriptions';
-import { operation, operationSelector } from '../../shared/operations';
-import { pdfToBinary } from '../../shared/postReceive';
+import { DOWNLOAD_REQUEST, operation, operationSelector } from '../../shared/operations';
+import { binaryDownload, pdfToBinary, returnSuccess, unwrapList } from '../../shared/postReceive';
+import { sendMultipartFile } from '../../shared/preSend';
 
 const RESOURCE = 'quote';
 
@@ -63,6 +67,15 @@ export const quoteDescription: INodeProperties[] = [
 		RESOURCE,
 		[
 			operation({
+				name: 'Approve',
+				value: 'approve',
+				action: 'Approve a quote',
+				description: 'Approve a quote as the account owner so it can be sent for signature',
+				method: 'POST',
+				url: '=/v1/quotes/{{$parameter.quote}}/approve',
+				output: 'success',
+			}),
+			operation({
 				name: 'Create',
 				value: 'create',
 				action: 'Create a quote',
@@ -78,11 +91,34 @@ export const quoteDescription: INodeProperties[] = [
 				method: 'GET',
 				url: '=/v1/quotes/{{$parameter.quote}}/download',
 				output: [pdfToBinary('quote', 'quote')],
-				request: {
-					encoding: 'arraybuffer',
-					json: false,
-					headers: { Accept: 'application/pdf' },
-				},
+				request: { ...DOWNLOAD_REQUEST, headers: { Accept: 'application/pdf' } },
+			}),
+			operation({
+				name: 'Download File',
+				value: 'downloadFile',
+				action: 'Download a file of a quote',
+				description: 'Download an attachment or the manually signed file of a quote',
+				method: 'GET',
+				url: '=/v1/quotes/{{$parameter.quote}}/files/{{$parameter.fileId}}/download',
+				output: [binaryDownload({ fileNamePrefix: 'quote-file', idParameter: 'fileId' })],
+				request: DOWNLOAD_REQUEST,
+			}),
+			operation({
+				name: 'Duplicate',
+				value: 'duplicate',
+				action: 'Duplicate a quote',
+				description: 'Create a draft copy of a quote with its subscription or invoice configuration',
+				method: 'POST',
+				url: '=/v1/quotes/{{$parameter.quote}}/duplicate',
+			}),
+			operation({
+				name: 'Finalize',
+				value: 'finalize',
+				action: 'Finalize a quote',
+				description: 'Finalize a draft quote, which submits it for approval when approval is required',
+				method: 'POST',
+				url: '=/v1/quotes/{{$parameter.quote}}/finalize',
+				output: 'success',
 			}),
 			operation({
 				name: 'Get',
@@ -91,6 +127,15 @@ export const quoteDescription: INodeProperties[] = [
 				description: 'Get a quote by ID',
 				method: 'GET',
 				url: '=/v1/quotes/{{$parameter.quote}}',
+			}),
+			operation({
+				name: 'Get Approvals',
+				value: 'getApprovals',
+				action: 'Get the approvals of a quote',
+				description: 'Get the approval request, steps and decisions of a quote without submitting it',
+				method: 'GET',
+				url: '=/v1/quotes/{{$parameter.quote}}/approvals',
+				output: 'list',
 			}),
 			operation({
 				name: 'Get Many',
@@ -102,12 +147,57 @@ export const quoteDescription: INodeProperties[] = [
 				output: 'list',
 			}),
 			operation({
+				name: 'Get Signers',
+				value: 'getSigners',
+				action: 'Get the signers of a quote',
+				description: 'List the signers of a quote in signing order, with the status of each',
+				method: 'GET',
+				url: '=/v1/quotes/{{$parameter.quote}}/signers',
+				output: 'list',
+			}),
+			operation({
+				name: 'Get Valuation',
+				value: 'getValuation',
+				action: 'Get the valuation of a quote',
+				description: 'Get the contract value, recurring contract value and ARR of a subscription quote',
+				method: 'GET',
+				url: '=/v1/quotes/{{$parameter.quote}}/valuation',
+			}),
+			operation({
+				name: 'Redraft',
+				value: 'redraft',
+				action: 'Redraft a quote',
+				description: 'Switch a quote back to draft, which cancels pending approval and signature requests',
+				method: 'POST',
+				url: '=/v1/quotes/{{$parameter.quote}}/redraft',
+				output: 'success',
+			}),
+			operation({
 				name: 'Send',
 				value: 'send',
 				action: 'Send a quote',
 				description: 'Email a quote to the customer for signature',
 				method: 'POST',
 				url: '=/v1/quotes/{{$parameter.quote}}/send',
+			}),
+			operation({
+				name: 'Set Signers',
+				value: 'setSigners',
+				action: 'Set the signers of a quote',
+				description: 'Replace the signature workflow of a quote',
+				method: 'PUT',
+				url: '=/v1/quotes/{{$parameter.quote}}/signers',
+				// Clearing the signers may answer with an empty list, which would otherwise stop the workflow
+				output: [unwrapList, returnSuccess],
+			}),
+			operation({
+				name: 'Sign',
+				value: 'sign',
+				action: 'Sign a quote',
+				description: 'Mark a quote as signed outside Hyperline, optionally with the signed file',
+				method: 'POST',
+				url: '=/v1/quotes/{{$parameter.quote}}/sign',
+				output: 'success',
 			}),
 			operation({
 				name: 'Update',
@@ -134,7 +224,23 @@ export const quoteDescription: INodeProperties[] = [
 		searchListMethod: 'getQuotes',
 		searchable: true,
 		idPrefix: 'quo_',
-		displayOptions: show(['download', 'get', 'send', 'update', 'void']),
+		displayOptions: show([
+			'approve',
+			'download',
+			'downloadFile',
+			'duplicate',
+			'finalize',
+			'get',
+			'getApprovals',
+			'getSigners',
+			'getValuation',
+			'redraft',
+			'send',
+			'setSigners',
+			'sign',
+			'update',
+			'void',
+		]),
 	}),
 
 	// Create
@@ -255,6 +361,90 @@ export const quoteDescription: INodeProperties[] = [
 				description: 'Language of the PDF. Defaults to the language of the customer.',
 			}),
 		],
+	},
+
+	// Download File
+	idParameter({
+		name: 'fileId',
+		displayName: 'File ID',
+		description: 'ID of the attachment or manually signed file, as listed on the quote',
+		displayOptions: show(['downloadFile']),
+	}),
+	binaryPropertyName(show(['downloadFile']), 'file'),
+
+	// Finalize
+	{
+		displayName: 'Options',
+		name: 'finalizeOptions',
+		type: 'collection',
+		placeholder: 'Add Option',
+		default: {},
+		displayOptions: show(['finalize']),
+		options: [
+			bodyOption({
+				displayName: 'Requester Comment',
+				name: 'requesterComment',
+				type: 'string',
+				typeOptions: { rows: 3 },
+				default: '',
+				description: 'Internal comment for the approvers, not shown on the quote',
+			}, 'requester_comment'),
+		],
+	},
+
+	// Get Valuation
+	{
+		displayName: 'Options',
+		name: 'valuationOptions',
+		type: 'collection',
+		placeholder: 'Add Option',
+		default: {},
+		displayOptions: show(['getValuation']),
+		options: [
+			queryOption({
+				displayName: 'Granularity',
+				name: 'granularity',
+				type: 'options',
+				options: [
+					{ name: 'Month', value: 'month' },
+					{ name: 'Quarter', value: 'quarter' },
+					{ name: 'Year', value: 'year' },
+				],
+				default: 'month',
+				description: 'Adds a breakdown of the contract value and recurring contract value per period',
+			}),
+		],
+	},
+
+	// Set Signers
+	jsonParameter({
+		displayName: 'Signers (JSON)',
+		name: 'signers',
+		property: 'signers',
+		shape: 'array',
+		required: true,
+		displayOptions: show(['setSigners']),
+		description:
+			'The full signature workflow, which replaces the current one. Each signer needs kind (external or countersigner), step_order and email, and can set first_name, last_name, language and, for countersigners, user_id. Signers with the same step_order sign in parallel. Send an empty array to go back to the single-signer flow.',
+		placeholder:
+			'[\n  { "kind": "external", "step_order": 1, "email": "name@email.com", "first_name": "Jane", "last_name": "Doe" },\n  { "kind": "countersigner", "step_order": 2, "email": "sales@email.com" }\n]',
+	}),
+
+	// Sign
+	{
+		displayName: 'Attach Signed File',
+		name: 'attachSignedFile',
+		type: 'boolean',
+		default: false,
+		description: 'Whether to upload the signed quote (PDF or Word document) from an input binary field',
+		displayOptions: show(['sign']),
+	},
+	{
+		...binaryInputProperty(
+			{ show: { resource: [RESOURCE], operation: ['sign'], attachSignedFile: [true] } },
+			'signed quote',
+		),
+		routing: { send: { preSend: [sendMultipartFile('signed_quote')] } },
 	},
 
 	// Get Many

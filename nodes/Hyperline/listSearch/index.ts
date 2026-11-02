@@ -10,16 +10,16 @@ import { hyperlineApiRequest } from '../shared/transport';
 type CursorPage = { data: IDataObject[]; has_more?: boolean; next_cursor?: string | null };
 type OffsetPage = { data: IDataObject[]; meta?: { total?: number; taken?: number; skipped?: number } };
 
-function formatAmount(amount: unknown, currency: unknown): string | undefined {
+export function formatAmount(amount: unknown, currency: unknown): string | undefined {
 	if (typeof amount !== 'number') return undefined;
 	return `${(amount / 100).toFixed(2)} ${typeof currency === 'string' ? currency : ''}`.trim();
 }
 
-function label(...parts: Array<string | undefined | null | false>): string {
+export function label(...parts: Array<string | undefined | null | false>): string {
 	return parts.filter((part): part is string => typeof part === 'string' && part !== '').join(' · ');
 }
 
-async function cursorSearch(
+export async function cursorSearch(
 	context: ILoadOptionsFunctions,
 	endpoint: string,
 	qs: IDataObject,
@@ -37,7 +37,7 @@ async function cursorSearch(
 	};
 }
 
-async function offsetSearch(
+export async function offsetSearch(
 	context: ILoadOptionsFunctions,
 	endpoint: string,
 	qs: IDataObject,

@@ -1,7 +1,7 @@
 {
 	"name": "n8n-nodes-hyperline",
 	"version": "1.0.2",
-	"description": "n8n community node for Hyperline: customers, subscriptions, invoices, quotes, products, usage events and webhooks",
+	"description": "n8n community node for Hyperline: customers, subscriptions, invoices, quotes, catalog, usage, credits, wallets, revenue recognition and webhooks",
 	"license": "MIT",
 	"homepage": "https://github.com/brngts/n8n-nodes-hyperline#readme",
 	"bugs": {
