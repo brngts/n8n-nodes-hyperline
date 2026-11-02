@@ -255,6 +255,66 @@ describe('Hyperline node description', () => {
 	});
 });
 
+/**
+ * Endpoints in Hyperline's OpenAPI spec that the node deliberately leaves out.
+ * Use the HTTP Request node with the Hyperline API credential for these.
+ */
+const NOT_COVERED: Array<{ pattern: RegExp; reason: string }> = [
+	{ pattern: /^[A-Z]+ \/oauth\//, reason: 'OAuth app flow, not used with API keys' },
+	{
+		pattern: /^[A-Z]+ \/v1\/accounting\/(journal-entries|journal-entry-lines|ledgers|accounts|primary-ledger|rules)/,
+		reason: 'ledger management (journal entries, ledgers, accounts, rules) is not in the node yet',
+	},
+	{ pattern: /^[A-Z]+ \/v1\/(ai|agents)\//, reason: 'AI billing and agent monitoring are not in the node yet' },
+	{ pattern: /^GET \/v1\/analytics$/, reason: 'account analytics are not in the node yet' },
+	{ pattern: /^[A-Z]+ \/v1\/apps/, reason: 'API app management' },
+	{ pattern: /^[A-Z]+ \/v1\/companies$/, reason: 'company management' },
+	{ pattern: /^[A-Z]+ \/v1\/organisations/, reason: 'organisation settings' },
+	{ pattern: /^[A-Z]+ \/v1\/invoicing-entities/, reason: 'invoicing entities are not in the node yet' },
+	{ pattern: /^POST \/v1\/integrations\/components\/token$/, reason: 'embedded UI components token' },
+	{ pattern: /^POST \/v1\/payments$/, reason: 'payments are not in the node yet' },
+	{
+		pattern: /^GET \/v1\/webhooks\/(endpoints\/\{id\}|messages)$/,
+		reason: 'webhook endpoints are managed by the Hyperline Trigger',
+	},
+	{ pattern: /^GET \/v1\/invoices(\/\{id\})?$/, reason: 'superseded by the v2 invoice endpoints the node uses' },
+];
+
+/** Webhook endpoint routes the Hyperline Trigger calls to register and remove itself. */
+const TRIGGER_ENDPOINTS = [
+	'GET /v1/webhooks/endpoints',
+	'POST /v1/webhooks/endpoints',
+	'PUT /v1/webhooks/endpoints/{id}',
+	'DELETE /v1/webhooks/endpoints/{id}',
+];
+
+describe('Hyperline API coverage', () => {
+	it('has an operation for every endpoint in the spec, apart from the documented exclusions', () => {
+		if (onlyResources) return;
+		const resources = (properties.find((property) => property.name === 'resource')?.options ?? [])
+			.filter(isOption)
+			.map((option) => String(option.value));
+		const covered = new Set(TRIGGER_ENDPOINTS);
+		for (const resource of resources) {
+			for (const operation of operationsFor(resource)) {
+				const { url, method } = operation.routing?.request ?? {};
+				covered.add(`${String(method)} ${String(specPathFor(String(url)))}`);
+			}
+		}
+
+		const endpoints = Object.entries(documented).flatMap(([path, methods]) =>
+			Object.keys(methods).map((method) => `${method} ${path}`),
+		);
+		const excluded = (endpoint: string) => NOT_COVERED.some(({ pattern }) => pattern.test(endpoint));
+
+		const missing = endpoints.filter((endpoint) => !covered.has(endpoint) && !excluded(endpoint));
+		expect(missing, 'add an operation, or an entry in NOT_COVERED with the reason').toEqual([]);
+
+		const coveredButExcluded = endpoints.filter((endpoint) => covered.has(endpoint) && excluded(endpoint));
+		expect(coveredButExcluded, 'remove these from NOT_COVERED').toEqual([]);
+	});
+});
+
 describe('Hyperline Trigger node description', () => {
 	it('is a webhook trigger with a full lifecycle', async () => {
 		const { HyperlineTrigger } = await import('../nodes/HyperlineTrigger/HyperlineTrigger.node');
