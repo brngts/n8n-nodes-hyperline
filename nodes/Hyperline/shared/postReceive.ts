@@ -11,17 +11,18 @@ import { HYPERLINE_CREDENTIAL_NAME } from './constants';
 import { DESCRIPTIONS_BY_STATUS, environmentMismatchHint, readApiMessage } from './errors';
 
 /**
- * Identifier parameters of the original resources, checked first. Any other
- * top-level parameter whose name ends in `Id` (such as `couponId`) is checked
- * after them, so a 404 can name the ID that was not found.
+ * Record pickers of the original resources. Plain ID parameters (names ending
+ * in `Id`, such as `transactionId`) are checked before them: when an operation
+ * has both, as in Invoice > Delete Transaction, the plain ID is the more
+ * specific record and the likelier one to be missing.
  */
 const IDENTIFIER_PARAMETERS = ['customer', 'subscription', 'invoice', 'quote', 'product'];
 
 function findIdentifier(context: IExecuteSingleFunctions): string | undefined {
 	const { parameters } = context.getNode();
 	const candidates = [
-		...IDENTIFIER_PARAMETERS,
 		...Object.keys(parameters).filter((name) => /^[a-z][A-Za-z]*Id$/.test(name)),
+		...IDENTIFIER_PARAMETERS,
 	];
 	for (const parameter of candidates) {
 		// `extractValue` throws for parameters the current operation does not define

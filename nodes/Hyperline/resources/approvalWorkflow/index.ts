@@ -1,5 +1,6 @@
 import type { INodeProperties } from 'n8n-workflow';
 import {
+	LIST_VALUE,
 	bodyOption,
 	idParameter,
 	jsonBodyProperty,
@@ -68,7 +69,7 @@ function approvalWorkflowFields(forOperation: 'create' | 'update'): INodePropert
 						send: {
 							type: 'body',
 							property: 'applicable_flows',
-							value: '={{ $value.split(",").map((flow) => flow.trim()).filter((flow) => flow !== "") }}',
+							value: LIST_VALUE,
 						},
 					},
 				},

@@ -2,6 +2,7 @@ import type { IDataObject, IExecuteSingleFunctions } from 'n8n-workflow';
 import { describe, expect, it } from 'vitest';
 import { toLineItem } from '../nodes/Hyperline/resources/invoice/lineItems';
 import { environmentMismatchHint, readApiMessage } from '../nodes/Hyperline/shared/errors';
+import { toUtcIso } from '../nodes/Hyperline/shared/dates';
 import { cursorPagination, offsetPagination } from '../nodes/Hyperline/shared/pagination';
 import { fileNameFromDisposition, unwrapList } from '../nodes/Hyperline/shared/postReceive';
 import { sendMultipartFile, setJsonBodyProperty } from '../nodes/Hyperline/shared/preSend';
@@ -138,5 +139,28 @@ describe('list and download helpers', () => {
 		expect(fileNameFromDisposition("attachment; filename*=UTF-8''r%C3%A9sum%C3%A9.xlsx")).toBe('résumé.xlsx');
 		expect(fileNameFromDisposition('inline')).toBeUndefined();
 		expect(fileNameFromDisposition(undefined)).toBeUndefined();
+	});
+});
+
+describe('toUtcIso', () => {
+	it('reads local times in the workflow timezone, across daylight saving time', () => {
+		expect(toUtcIso('2026-11-02T00:00:00', 'Europe/Berlin')).toBe('2026-11-01T23:00:00.000Z');
+		expect(toUtcIso('2026-07-01T00:00:00', 'Europe/Berlin')).toBe('2026-06-30T22:00:00.000Z');
+		expect(toUtcIso('2026-03-01', 'America/New_York')).toBe('2026-03-01T05:00:00.000Z');
+		expect(toUtcIso('2026-03-29T03:30:00', 'Europe/Berlin')).toBe('2026-03-29T01:30:00.000Z');
+	});
+
+	it('keeps the instant of values that carry an offset, and passes through invalid ones', () => {
+		expect(toUtcIso('2026-07-01T00:00:00+02:00', 'America/New_York')).toBe('2026-06-30T22:00:00.000Z');
+		expect(toUtcIso('2026-07-01T00:00:00Z', 'Europe/Berlin')).toBe('2026-07-01T00:00:00.000Z');
+		expect(toUtcIso('next tuesday', 'Europe/Berlin')).toBe('next tuesday');
+		expect(toUtcIso('2026-07-01T00:00:00', 'Not/AZone')).toBe('2026-07-01T00:00:00');
+	});
+
+	it('converts invoice line item periods', () => {
+		expect(toLineItem({ name: 'Seats', periodStart: '2026-07-01T00:00:00' }, 'Europe/Berlin')).toEqual({
+			name: 'Seats',
+			period_start: '2026-06-30T22:00:00.000Z',
+		});
 	});
 });

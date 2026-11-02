@@ -8,6 +8,7 @@ import {
 	queryOption,
 	recordLocator,
 } from '../../shared/descriptions';
+import { UTC_DATE_TIME_VALUE } from '../../shared/dates';
 import { operation, operationSelector } from '../../shared/operations';
 import { REFUND_METHOD_OPTIONS } from '../../shared/options';
 
@@ -568,7 +569,7 @@ export const subscriptionDescription: INodeProperties[] = [
 		description:
 			'Date up to which the subscription is renewed, exclusive. Hyperline generates every invoice until then, up to 36 renewals.',
 		displayOptions: show(['renew']),
-		routing: { send: { type: 'body', property: 'up_to' } },
+		routing: { send: { type: 'body', property: 'up_to', value: UTC_DATE_TIME_VALUE } },
 	},
 
 	// Apply Update, Apply Multiple Updates and Simulate Updates
@@ -646,7 +647,7 @@ export const subscriptionDescription: INodeProperties[] = [
 		displayOptions: {
 			show: { resource: [RESOURCE], operation: UPDATE_OPERATIONS, applicationSchedule: ['scheduled'] },
 		},
-		routing: { send: { type: 'body', property: 'apply_at' } },
+		routing: { send: { type: 'body', property: 'apply_at', value: UTC_DATE_TIME_VALUE } },
 	},
 	{
 		displayName: 'Payment Schedule',
@@ -685,7 +686,7 @@ export const subscriptionDescription: INodeProperties[] = [
 		displayOptions: {
 			show: { resource: [RESOURCE], operation: UPDATE_OPERATIONS, paymentSchedule: ['custom'] },
 		},
-		routing: { send: { type: 'body', property: 'charge_at' } },
+		routing: { send: { type: 'body', property: 'charge_at', value: UTC_DATE_TIME_VALUE } },
 	},
 	{
 		displayName: 'Calculation Method',

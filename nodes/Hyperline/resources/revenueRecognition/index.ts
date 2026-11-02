@@ -7,7 +7,7 @@ import {
 	recordLocator,
 } from '../../shared/descriptions';
 import { operation, operationSelector } from '../../shared/operations';
-import { DATE_VALUE } from '../aggregator/dates';
+import { DATE_VALUE } from '../../shared/dates';
 
 const RESOURCE = 'revenueRecognition';
 

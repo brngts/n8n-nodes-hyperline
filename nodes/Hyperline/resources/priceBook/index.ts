@@ -1,5 +1,6 @@
 import type { INodeProperties } from 'n8n-workflow';
 import {
+	LIST_VALUE,
 	bodyOption,
 	byDisplayName,
 	idParameter,
@@ -11,8 +12,6 @@ import { operation, operationSelector } from '../../shared/operations';
 const RESOURCE = 'priceBook';
 
 const show = (operations: string[]) => ({ show: { resource: [RESOURCE], operation: operations } });
-
-const splitIds = '={{ $value.split(",").map((id) => id.trim()).filter((id) => id !== "") }}';
 
 /** Optional fields shared by Create and Update. */
 function priceBookFields(): INodeProperties[] {
@@ -33,7 +32,7 @@ function priceBookFields(): INodeProperties[] {
 				send: {
 					type: 'body',
 					property: 'user_role_ids',
-					value: splitIds,
+					value: LIST_VALUE,
 				},
 			},
 		},
@@ -127,7 +126,7 @@ export const priceBookDescription: INodeProperties[] = [
 			send: {
 				type: 'body',
 				property: 'product_ids',
-				value: splitIds,
+				value: LIST_VALUE,
 			},
 		},
 	},

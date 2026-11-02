@@ -6,6 +6,7 @@ import {
 	paginationProperties,
 	queryOption,
 } from '../../shared/descriptions';
+import { UTC_DATE_TIME_VALUE } from '../../shared/dates';
 import { operation, operationSelector } from '../../shared/operations';
 
 const RESOURCE = 'promotionCode';
@@ -13,13 +14,6 @@ const RESOURCE = 'promotionCode';
 const show = (operations: string[]) => ({ show: { resource: [RESOURCE], operation: operations } });
 
 const getManyQueryParameters = ['coupon_id'];
-
-/**
- * Hyperline only accepts UTC timestamps ending in `Z`, while n8n date pickers
- * give local times without an offset, so the date is converted to UTC.
- */
-const UTC_DATE_VALUE =
-	'={{ $value ? (DateTime.fromISO(String($value)).toUTC().toISO() ?? $value) : undefined }}';
 
 /** Restrictions and limits shared by Create and Update. Update cannot move a code to another coupon. */
 const promotionCodeFields: INodeProperties[] = [
@@ -79,7 +73,7 @@ const promotionCodeFields: INodeProperties[] = [
 		type: 'dateTime',
 		default: '',
 		description: 'After this date the code can no longer be used',
-		routing: { send: { type: 'body', property: 'expires_at', value: UTC_DATE_VALUE } },
+		routing: { send: { type: 'body', property: 'expires_at', value: UTC_DATE_TIME_VALUE } },
 	},
 	bodyOption(
 		{

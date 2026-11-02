@@ -1,6 +1,7 @@
 import type { INodeProperties, INodePropertyOptions } from 'n8n-workflow';
 import { describe, expect, it } from 'vitest';
 import { Hyperline } from '../nodes/Hyperline/Hyperline.node';
+import { DATE_VALUE, UTC_DATE_TIME_VALUE } from '../nodes/Hyperline/shared/dates';
 import hyperlinePaths from './fixtures/hyperline-paths.json';
 
 const node = new Hyperline();
@@ -162,6 +163,26 @@ describe('Hyperline node description', () => {
 		}
 	});
 
+	it('only puts parameters in URLs that the operation shows', () => {
+		const problems: string[] = [];
+		for (const resource of resourceValues) {
+			for (const operation of operationsFor(resource)) {
+				const url = String(operation.routing?.request?.url ?? '');
+				for (const [, name] of url.matchAll(/\$parameter\.(\w+)/g)) {
+					const shown = properties.some(
+						(property) =>
+							property.name === name &&
+							property.displayOptions?.show?.resource?.includes(resource) &&
+							property.displayOptions?.show?.operation?.includes(operation.value) &&
+							property.required === true,
+					);
+					if (!shown) problems.push(`${resource}.${String(operation.value)} uses ${name} in ${url}`);
+				}
+			}
+		}
+		expect(problems).toEqual([]);
+	});
+
 	it('only sends query and body parameters the endpoint accepts', () => {
 		const problems: string[] = [];
 		let checked = 0;
@@ -239,6 +260,27 @@ describe('Hyperline node description', () => {
 		scopedProperties.forEach(collect);
 		const wrong = texts.filter((text) => /\ba [aeio]/i.test(text) || /\ban [^aeiou]/i.test(text));
 		expect(wrong).toEqual([]);
+	});
+
+	it('sends every date in a format Hyperline accepts', () => {
+		const unconverted: string[] = [];
+		const visit = (property: INodeProperties, where: string) => {
+			const send = property.routing?.send;
+			if (property.type === 'dateTime' && send && ![UTC_DATE_TIME_VALUE, DATE_VALUE].includes(String(send.value))) {
+				unconverted.push(`${where} > ${property.displayName}`);
+			}
+			for (const option of property.options ?? []) {
+				if (typeof option !== 'object' || option === null) continue;
+				const candidates = 'values' in option ? (option.values ?? []) : [option];
+				for (const candidate of candidates) {
+					if ('type' in candidate) visit(candidate as INodeProperties, `${where} > ${property.displayName}`);
+				}
+			}
+		};
+		for (const property of scopedProperties) {
+			visit(property, JSON.stringify(property.displayOptions?.show ?? {}));
+		}
+		expect(unconverted).toEqual([]);
 	});
 
 	it('registers every list search method it references', () => {

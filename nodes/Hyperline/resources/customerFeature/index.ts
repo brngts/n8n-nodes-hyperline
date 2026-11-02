@@ -1,7 +1,7 @@
 import type { INodeProperties } from 'n8n-workflow';
 import { bodyOption, recordLocator } from '../../shared/descriptions';
 import { operation, operationSelector } from '../../shared/operations';
-import { dateBodyOption, dateQueryOption } from '../customer/dates';
+import { dateBodyOption, dateQueryOption } from '../../shared/dates';
 
 const RESOURCE = 'customerFeature';
 

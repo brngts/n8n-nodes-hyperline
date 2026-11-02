@@ -1,5 +1,6 @@
 import type { INodeProperties } from 'n8n-workflow';
 import {
+	LIST_VALUE,
 	bodyOption,
 	idParameter,
 	jsonBodyProperty,
@@ -140,7 +141,7 @@ function couponFields(forOperation: 'create' | 'update'): INodeProperties[] {
 						send: {
 							type: 'body',
 							property: 'product_ids',
-							value: '={{ $value.split(",").map((id) => id.trim()).filter((id) => id !== "") }}',
+							value: LIST_VALUE,
 						},
 					},
 				},

@@ -6,7 +6,7 @@ import {
 	recordLocator,
 } from '../../shared/descriptions';
 import { operation, operationSelector } from '../../shared/operations';
-import { dateQueryOption } from '../customer/dates';
+import { dateQueryOption } from '../../shared/dates';
 
 const RESOURCE = 'customerUsage';
 

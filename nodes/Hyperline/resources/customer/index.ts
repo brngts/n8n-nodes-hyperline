@@ -1,5 +1,6 @@
 import type { INodeProperties } from 'n8n-workflow';
 import {
+	LIST_VALUE,
 	bodyOption,
 	byDisplayName,
 	jsonArrayBodyParameter,
@@ -11,7 +12,7 @@ import {
 } from '../../shared/descriptions';
 import { operation, operationSelector } from '../../shared/operations';
 import { LANGUAGE_OPTIONS, PAYMENT_METHOD_OPTIONS } from '../../shared/options';
-import { dateQueryOption } from './dates';
+import { dateQueryOption } from '../../shared/dates';
 
 const RESOURCE = 'customer';
 
@@ -154,7 +155,7 @@ function customerFields(forUpdate: boolean): INodeProperties[] {
 					type: 'body',
 					property: 'invoice_emails',
 					value:
-						'={{ $value.split(",").map((email) => email.trim()).filter((email) => email !== "") }}',
+						LIST_VALUE,
 				},
 			},
 		},

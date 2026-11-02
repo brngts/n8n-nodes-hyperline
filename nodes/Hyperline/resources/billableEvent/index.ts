@@ -1,5 +1,6 @@
 import type { INodeProperties } from 'n8n-workflow';
 import {
+	LIST_VALUE,
 	jsonArrayBodyParameter,
 	jsonParameter,
 	paginationProperties,
@@ -8,7 +9,7 @@ import {
 import { INGEST_BASE_URL } from '../../shared/constants';
 import { operation, operationSelector } from '../../shared/operations';
 import { setJsonBodyProperty } from '../../shared/preSend';
-import { UTC_DATE_TIME_VALUE } from '../aggregator/dates';
+import { UTC_DATE_TIME_VALUE } from '../../shared/dates';
 
 const RESOURCE = 'billableEvent';
 
@@ -116,7 +117,7 @@ export const billableEventDescription: INodeProperties[] = [
 		default: '={{ $now.toISO() }}',
 		description: 'When the usage happened',
 		displayOptions: show(['send']),
-		routing: { send: { type: 'body', property: 'timestamp' } },
+		routing: { send: { type: 'body', property: 'timestamp', value: UTC_DATE_TIME_VALUE } },
 	},
 	{
 		displayName: 'Record (JSON)',
@@ -190,7 +191,7 @@ export const billableEventDescription: INodeProperties[] = [
 					send: {
 						type: 'body',
 						property: 'record_ids',
-						value: '={{ $value.split(",").map((id) => id.trim()).filter((id) => id !== "") }}',
+						value: LIST_VALUE,
 					},
 				},
 			},

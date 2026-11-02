@@ -1,4 +1,5 @@
 import type { IDataObject, IExecuteSingleFunctions, IHttpRequestOptions } from 'n8n-workflow';
+import { toUtcIso } from '../../shared/dates';
 import { withBodyProperties } from '../../shared/preSend';
 
 type LineItemInput = {
@@ -23,12 +24,21 @@ const FIELD_NAMES: Record<keyof LineItemInput, string> = {
 	periodEnd: 'period_end',
 };
 
-/** Maps one form row to Hyperline's line item shape, leaving out fields the user left empty. */
-export function toLineItem(input: LineItemInput): IDataObject {
+const DATE_FIELDS = new Set<keyof LineItemInput>(['periodStart', 'periodEnd']);
+
+/**
+ * Maps one form row to Hyperline's line item shape, leaving out fields the user
+ * left empty. With `timeZone`, period dates are sent in UTC.
+ */
+export function toLineItem(input: LineItemInput, timeZone?: string): IDataObject {
 	const lineItem: IDataObject = {};
 	for (const [key, apiName] of Object.entries(FIELD_NAMES)) {
 		const value = input[key as keyof LineItemInput];
-		if (value !== undefined && value !== '') lineItem[apiName] = value;
+		if (value === undefined || value === '') continue;
+		lineItem[apiName] =
+			timeZone && typeof value === 'string' && DATE_FIELDS.has(key as keyof LineItemInput)
+				? toUtcIso(value, timeZone)
+				: value;
 	}
 	return lineItem;
 }
@@ -45,7 +55,7 @@ async function sendLineItemRows(
 	if (rows.length === 0) return requestOptions;
 	requestOptions.body = {
 		...((requestOptions.body ?? {}) as IDataObject),
-		line_items: rows.map(toLineItem),
+		line_items: rows.map((row) => toLineItem(row, this.getTimezone())),
 	};
 	return requestOptions;
 }

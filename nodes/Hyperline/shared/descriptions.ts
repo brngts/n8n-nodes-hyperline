@@ -1,5 +1,6 @@
 import type { IDisplayOptions, INodeProperties } from 'n8n-workflow';
 import { PAGE_SIZE } from './constants';
+import { UTC_DATE_TIME_VALUE } from './dates';
 import { cursorPagination, offsetPagination } from './pagination';
 import { mergeJsonBody, sendJsonArrayBody, setJsonBodyProperty } from './preSend';
 
@@ -335,7 +336,7 @@ export function binaryInputProperty(
 	};
 }
 
-/** A "Filters" or "Fields" collection entry that sends one query parameter. */
+/** A "Filters" or "Fields" collection entry that sends one query parameter. Dates are sent in UTC. */
 export function queryOption(option: Omit<INodeProperties, 'routing'>, property = option.name): INodeProperties {
 	return {
 		...option,
@@ -343,13 +344,17 @@ export function queryOption(option: Omit<INodeProperties, 'routing'>, property =
 			send: {
 				type: 'query',
 				property,
-				value: '={{ $value === "" ? undefined : $value }}',
+				value:
+					option.type === 'dateTime' ? UTC_DATE_TIME_VALUE : '={{ $value === "" ? undefined : $value }}',
 			},
 		},
 	};
 }
 
-/** A collection entry that sends one body field. Dotted names such as `billing_address.city` nest. */
+/**
+ * A collection entry that sends one body field. Dotted names such as
+ * `billing_address.city` nest. Dates are sent in UTC.
+ */
 export function bodyOption(option: Omit<INodeProperties, 'routing'>, property = option.name): INodeProperties {
 	return {
 		...option,
@@ -357,10 +362,18 @@ export function bodyOption(option: Omit<INodeProperties, 'routing'>, property = 
 			send: {
 				type: 'body',
 				property,
+				...(option.type === 'dateTime' ? { value: UTC_DATE_TIME_VALUE } : {}),
 			},
 		},
 	};
 }
+
+/**
+ * Routing value that sends a comma-separated string (or an array from an
+ * expression) as an array of trimmed, non-empty entries.
+ */
+export const LIST_VALUE =
+	'={{ (Array.isArray($value) ? $value : String($value ?? "").split(",")).map((entry) => String(entry).trim()).filter((entry) => entry !== "") }}';
 
 /** Keeps collection entries in the alphabetical order n8n expects. */
 export function byDisplayName(a: INodeProperties, b: INodeProperties): number {

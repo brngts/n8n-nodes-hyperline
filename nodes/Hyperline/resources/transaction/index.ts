@@ -6,7 +6,7 @@ import {
 	paginationProperties,
 } from '../../shared/descriptions';
 import { operation, operationSelector } from '../../shared/operations';
-import { dateBodyOption } from '../customerCredit/dates';
+import { dateBodyOption } from '../../shared/dates';
 
 const RESOURCE = 'transaction';
 

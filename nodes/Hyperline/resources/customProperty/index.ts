@@ -1,5 +1,6 @@
 import type { INodeProperties } from 'n8n-workflow';
 import {
+	LIST_VALUE,
 	bodyOption,
 	idParameter,
 	jsonBodyProperty,
@@ -99,7 +100,7 @@ function customPropertyFields(forOperation: 'create' | 'update'): INodePropertie
 							type: 'body',
 							property: 'authorized_values',
 							value:
-								'={{ $value.split(",").map((value) => value.trim()).filter((value) => value !== "") }}',
+								LIST_VALUE,
 						},
 					},
 				},

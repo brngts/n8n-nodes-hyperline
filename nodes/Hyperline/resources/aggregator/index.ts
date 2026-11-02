@@ -1,5 +1,6 @@
 import type { INodeProperties } from 'n8n-workflow';
 import {
+	LIST_VALUE,
 	bodyOption,
 	byDisplayName,
 	idParameter,
@@ -8,7 +9,7 @@ import {
 	queryOption,
 } from '../../shared/descriptions';
 import { operation, operationSelector } from '../../shared/operations';
-import { UTC_DATE_TIME_VALUE } from './dates';
+import { UTC_DATE_TIME_VALUE } from '../../shared/dates';
 
 const RESOURCE = 'aggregator';
 
@@ -92,7 +93,7 @@ const sharedAggregatorFields: INodeProperties[] = [
 			send: {
 				type: 'body',
 				property: 'exposed_event_keys',
-				value: '={{ $value.split(",").map((key) => key.trim()).filter((key) => key !== "") }}',
+				value: LIST_VALUE,
 			},
 		},
 	},

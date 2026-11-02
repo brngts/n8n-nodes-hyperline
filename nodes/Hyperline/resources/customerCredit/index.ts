@@ -10,7 +10,7 @@ import {
 	recordLocator,
 } from '../../shared/descriptions';
 import { operation, operationSelector } from '../../shared/operations';
-import { dateBodyOption, dateQueryOption } from './dates';
+import { dateBodyOption, dateQueryOption } from '../../shared/dates';
 
 const RESOURCE = 'customerCredit';
 

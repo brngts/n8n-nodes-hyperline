@@ -1,5 +1,6 @@
 import type { INodeProperties } from 'n8n-workflow';
 import {
+	LIST_VALUE,
 	binaryInputProperty,
 	binaryPropertyName,
 	bodyOption,
@@ -12,6 +13,7 @@ import {
 	queryOption,
 	recordLocator,
 } from '../../shared/descriptions';
+import { UTC_DATE_TIME_VALUE } from '../../shared/dates';
 import { operation, operationSelector } from '../../shared/operations';
 import { LANGUAGE_OPTIONS, REFUND_METHOD_OPTIONS } from '../../shared/options';
 import { pdfToBinary } from '../../shared/postReceive';
@@ -703,7 +705,7 @@ export const invoiceDescription: INodeProperties[] = [
 			send: {
 				type: 'body',
 				property: 'ids',
-				value: '={{ $value.split(",").map((id) => id.trim()).filter((id) => id !== "") }}',
+				value: LIST_VALUE,
 			},
 		},
 	},
@@ -811,7 +813,7 @@ export const invoiceDescription: INodeProperties[] = [
 		default: '',
 		description: 'When the transaction is processed. A future date schedules it.',
 		displayOptions: show(['createTransaction']),
-		routing: { send: { type: 'body', property: 'process_at' } },
+		routing: { send: { type: 'body', property: 'process_at', value: UTC_DATE_TIME_VALUE } },
 	},
 	{
 		displayName: 'Additional Fields',

@@ -1,5 +1,6 @@
 import type { INodeProperties } from 'n8n-workflow';
 import {
+	LIST_VALUE,
 	bodyOption,
 	byDisplayName,
 	customerBodyLocator,
@@ -9,7 +10,7 @@ import {
 	recordLocator,
 } from '../../shared/descriptions';
 import { operation, operationSelector } from '../../shared/operations';
-import { dateBodyOption } from '../customerCredit/dates';
+import { dateBodyOption } from '../../shared/dates';
 
 const RESOURCE = 'wallet';
 
@@ -318,7 +319,7 @@ export const walletDescription: INodeProperties[] = [
 			send: {
 				type: 'body',
 				property: 'invoice_line_item_ids',
-				value: '={{ $value.split(",").map((id) => id.trim()).filter((id) => id !== "") }}',
+				value: LIST_VALUE,
 			},
 		},
 	},
@@ -447,7 +448,7 @@ export const walletDescription: INodeProperties[] = [
 					send: {
 						type: 'body',
 						property: 'product_ids',
-						value: '={{ $value.split(",").map((id) => id.trim()).filter((id) => id !== "") }}',
+						value: LIST_VALUE,
 					},
 				},
 			},

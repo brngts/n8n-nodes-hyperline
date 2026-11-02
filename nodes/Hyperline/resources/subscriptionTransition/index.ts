@@ -7,6 +7,7 @@ import {
 	queryOption,
 	recordLocator,
 } from '../../shared/descriptions';
+import { UTC_DATE_TIME_VALUE } from '../../shared/dates';
 import { operation, operationSelector } from '../../shared/operations';
 
 const RESOURCE = 'subscriptionTransition';
@@ -160,7 +161,7 @@ function transitionFields(forOperation: 'create' | 'preview'): INodeProperties[]
 			description:
 				'Date the transition occurs. A past date within the current billing period applies it immediately.',
 			displayOptions: showFor({ applicationSchedule: ['scheduled'] }),
-			routing: { send: { type: 'body', property: 'transition_date' } },
+			routing: { send: { type: 'body', property: 'transition_date', value: UTC_DATE_TIME_VALUE } },
 		},
 		jsonParameter({
 			displayName: 'Target Subscription (JSON)',

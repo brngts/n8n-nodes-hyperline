@@ -1,7 +1,12 @@
 import type { INodeProperties } from 'n8n-workflow';
-import { bodyOption, byDisplayName, idParameter } from '../../shared/descriptions';
+import {
+	LIST_VALUE,
+	bodyOption,
+	byDisplayName,
+	idParameter,
+} from '../../shared/descriptions';
 import { operation, operationSelector } from '../../shared/operations';
-import { DATE_VALUE } from '../aggregator/dates';
+import { DATE_VALUE } from '../../shared/dates';
 
 const RESOURCE = 'accountingReport';
 
@@ -50,7 +55,7 @@ const generalLedgerOptions: INodeProperties[] = [
 			send: {
 				type: 'body',
 				property: 'account_ids',
-				value: '={{ $value.split(",").map((id) => id.trim()).filter((id) => id !== "") }}',
+				value: LIST_VALUE,
 			},
 		},
 	},
