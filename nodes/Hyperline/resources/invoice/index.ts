@@ -1,10 +1,13 @@
 import type { INodeProperties } from 'n8n-workflow';
 import {
+	binaryInputProperty,
 	binaryPropertyName,
 	bodyOption,
 	byDisplayName,
 	customerBodyLocator,
+	idParameter,
 	jsonBodyProperty,
+	jsonParameter,
 	paginationProperties,
 	queryOption,
 	recordLocator,
@@ -12,6 +15,7 @@ import {
 import { operation, operationSelector } from '../../shared/operations';
 import { LANGUAGE_OPTIONS, REFUND_METHOD_OPTIONS } from '../../shared/options';
 import { pdfToBinary } from '../../shared/postReceive';
+import { sendMultipartFile } from '../../shared/preSend';
 import { sendLineItems } from './lineItems';
 
 const RESOURCE = 'invoice';
@@ -31,6 +35,14 @@ export const invoiceGetManyQueryParameters = [
 	'due_at__lte',
 	'updated_at__gte',
 	'sort',
+	'order',
+];
+
+const invoiceEventsQueryParameters = [
+	'event_type',
+	'product_id',
+	'timestamp__gte',
+	'timestamp__lte',
 	'order',
 ];
 
@@ -119,12 +131,37 @@ export const invoiceDescription: INodeProperties[] = [
 				url: '=/v1/invoices/{{$parameter.invoice}}/credit-notes',
 			}),
 			operation({
+				name: 'Create Many',
+				value: 'createMany',
+				action: 'Create many invoices',
+				description: 'Create up to 50 invoices in one asynchronous batch',
+				method: 'POST',
+				url: '/v2/invoices/batch',
+			}),
+			operation({
+				name: 'Create Transaction',
+				value: 'createTransaction',
+				action: 'Create a transaction on an invoice',
+				description: 'Record a payment transaction on an invoice',
+				method: 'POST',
+				url: '=/v1/invoices/{{$parameter.invoice}}/transactions',
+			}),
+			operation({
 				name: 'Delete',
 				value: 'delete',
 				action: 'Delete an invoice',
 				description: 'Delete a draft invoice',
 				method: 'DELETE',
 				url: '=/v1/invoices/{{$parameter.invoice}}',
+				output: 'success',
+			}),
+			operation({
+				name: 'Delete Transaction',
+				value: 'deleteTransaction',
+				action: 'Delete a transaction from an invoice',
+				description: 'Delete a scheduled transaction or wallet debit from an invoice',
+				method: 'DELETE',
+				url: '=/v1/invoices/{{$parameter.invoice}}/transactions/{{$parameter.transactionId}}',
 				output: 'success',
 			}),
 			operation({
@@ -150,6 +187,15 @@ export const invoiceDescription: INodeProperties[] = [
 				url: '=/v2/invoices/{{$parameter.invoice}}',
 			}),
 			operation({
+				name: 'Get Events',
+				value: 'getEvents',
+				action: 'Get events of an invoice',
+				description: 'List the usage events billed on an invoice',
+				method: 'GET',
+				url: '=/v1/invoices/{{$parameter.invoice}}/events',
+				output: 'list',
+			}),
+			operation({
 				name: 'Get Many',
 				value: 'getAll',
 				action: 'Get many invoices',
@@ -167,12 +213,39 @@ export const invoiceDescription: INodeProperties[] = [
 				url: '=/v1/invoices/{{$parameter.invoice}}/uncollectible',
 			}),
 			operation({
+				name: 'Send Email',
+				value: 'sendEmail',
+				action: 'Send invoice emails',
+				description: 'Email one or more invoices to their customers',
+				method: 'POST',
+				url: '/v1/invoices/send-email',
+				output: 'success',
+			}),
+			operation({
 				name: 'Update',
 				value: 'update',
 				action: 'Update an invoice',
 				description: 'Update a draft invoice',
 				method: 'PATCH',
 				url: '=/v1/invoices/{{$parameter.invoice}}',
+			}),
+			operation({
+				name: 'Upload PDF',
+				value: 'uploadPdf',
+				action: 'Upload a PDF to an invoice',
+				description: 'Replace the generated PDF of an invoice with your own file of up to 5 MB',
+				method: 'POST',
+				url: '=/v1/invoices/{{$parameter.invoice}}/upload',
+				output: 'success',
+			}),
+			operation({
+				name: 'Validate',
+				value: 'validate',
+				action: 'Validate an invoice',
+				description: 'Finalize a draft invoice, or submit it for approval when required',
+				method: 'POST',
+				url: '=/v1/invoices/{{$parameter.invoice}}/validate',
+				output: 'success',
 			}),
 			operation({
 				name: 'Void',
@@ -194,11 +267,16 @@ export const invoiceDescription: INodeProperties[] = [
 		displayOptions: show([
 			'charge',
 			'createCreditNote',
+			'createTransaction',
 			'delete',
+			'deleteTransaction',
 			'download',
 			'get',
+			'getEvents',
 			'markUncollectible',
 			'update',
+			'uploadPdf',
+			'validate',
 			'void',
 		]),
 	}),
@@ -578,5 +656,238 @@ export const invoiceDescription: INodeProperties[] = [
 				default: 'desc',
 			}),
 		],
+	},
+
+	// Create Many
+	jsonParameter({
+		displayName: 'Invoices (JSON)',
+		name: 'invoices',
+		property: 'invoices',
+		shape: 'array',
+		required: true,
+		description:
+			'Invoices to create, at most 50. Each takes the Create fields plus a batch_invoice_id that is unique within the batch. Amounts are in cents. Results arrive through the invoice.batch webhooks.',
+		placeholder:
+			'[\n  {\n    "batch_invoice_id": "1",\n    "customer_id": "cus_DKL4Xcb5VSa8CQ",\n    "line_items": [{ "name": "Consulting", "unit_amount": 50000, "units_count": 1 }]\n  }\n]',
+		displayOptions: show(['createMany']),
+	}),
+	{
+		displayName: 'Options',
+		name: 'createManyOptions',
+		type: 'collection',
+		placeholder: 'Add Option',
+		default: {},
+		displayOptions: show(['createMany']),
+		options: [
+			bodyOption({
+				displayName: 'Batch ID',
+				name: 'batchId',
+				type: 'string',
+				default: '',
+				description: 'Identifier of the batch, returned in the webhooks. Hyperline generates one when empty.',
+			}, 'batch_id'),
+		],
+	},
+
+	// Send Email
+	{
+		displayName: 'Invoice IDs',
+		name: 'invoiceIds',
+		type: 'string',
+		required: true,
+		default: '',
+		placeholder: 'e.g. inv_DKL4Xcb5VSa8CQ, inv_8dKpQ2mXc7RtYb',
+		description: 'Comma-separated invoices to email',
+		displayOptions: show(['sendEmail']),
+		routing: {
+			send: {
+				type: 'body',
+				property: 'ids',
+				value: '={{ $value.split(",").map((id) => id.trim()).filter((id) => id !== "") }}',
+			},
+		},
+	},
+	{
+		displayName: 'Options',
+		name: 'sendEmailOptions',
+		type: 'collection',
+		placeholder: 'Add Option',
+		default: {},
+		displayOptions: show(['sendEmail']),
+		options: [
+			bodyOption({
+				displayName: 'Batch ID',
+				name: 'batchId',
+				type: 'string',
+				default: '',
+				description: 'Identifier of the batch of emails',
+			}, 'batch_id'),
+			bodyOption({
+				displayName: 'Email Type',
+				name: 'emailType',
+				type: 'string',
+				default: '',
+				description: 'Kind of email to send, as named in the Hyperline API reference',
+			}, 'email_type'),
+		],
+	},
+
+	// Get Events
+	...paginationProperties(show(['getEvents']), 'offset', invoiceEventsQueryParameters),
+	{
+		displayName: 'Filters',
+		name: 'eventFilters',
+		type: 'collection',
+		placeholder: 'Add Filter',
+		default: {},
+		displayOptions: show(['getEvents']),
+		options: [
+			queryOption({
+				displayName: 'Event Type',
+				name: 'eventType',
+				type: 'string',
+				default: '',
+				placeholder: 'e.g. workflow_execution',
+			}, 'event_type'),
+			queryOption({
+				displayName: 'Occurred After',
+				name: 'occurredAfter',
+				type: 'dateTime',
+				default: '',
+			}, 'timestamp__gte'),
+			queryOption({
+				displayName: 'Occurred Before',
+				name: 'occurredBefore',
+				type: 'dateTime',
+				default: '',
+			}, 'timestamp__lte'),
+			queryOption({
+				displayName: 'Product ID',
+				name: 'productId',
+				type: 'string',
+				default: '',
+				placeholder: 'e.g. itm_3kXODDF42QXtnL',
+			}, 'product_id'),
+		],
+	},
+	{
+		displayName: 'Options',
+		name: 'eventOptions',
+		type: 'collection',
+		placeholder: 'Add Option',
+		default: {},
+		displayOptions: show(['getEvents']),
+		options: [
+			queryOption({
+				displayName: 'Sort Order',
+				name: 'order',
+				type: 'options',
+				options: [
+					{ name: 'Ascending', value: 'asc' },
+					{ name: 'Descending', value: 'desc' },
+				],
+				default: 'desc',
+			}),
+		],
+	},
+
+	// Create Transaction
+	{
+		displayName: 'Amount (Cents)',
+		name: 'amount',
+		type: 'number',
+		required: true,
+		default: 0,
+		typeOptions: { minValue: 0 },
+		description: 'Amount of the transaction in cents, for example 1999 for 19.99',
+		displayOptions: show(['createTransaction']),
+		routing: { send: { type: 'body', property: 'amount' } },
+	},
+	{
+		displayName: 'Processed At',
+		name: 'processAt',
+		type: 'dateTime',
+		required: true,
+		default: '',
+		description: 'When the transaction is processed. A future date schedules it.',
+		displayOptions: show(['createTransaction']),
+		routing: { send: { type: 'body', property: 'process_at' } },
+	},
+	{
+		displayName: 'Additional Fields',
+		name: 'transactionFields',
+		type: 'collection',
+		placeholder: 'Add Field',
+		default: {},
+		displayOptions: show(['createTransaction']),
+		options: [
+			bodyOption({
+				displayName: 'Bank Account ID',
+				name: 'bankAccountId',
+				type: 'string',
+				default: '',
+				description: 'Bank account the transaction is linked to',
+			}, 'bank_account_id'),
+			bodyOption({
+				displayName: 'Payment Method ID',
+				name: 'paymentMethodId',
+				type: 'string',
+				default: '',
+				placeholder: 'e.g. pm_1xMpj5bwRqN7LM',
+				description: 'Payment method that executes a scheduled transaction',
+			}, 'payment_method_id'),
+			bodyOption({
+				displayName: 'Payment Method Type',
+				name: 'paymentMethodType',
+				type: 'options',
+				options: [
+					{ name: 'Bank Transfer', value: 'transfer' },
+					{ name: 'External', value: 'external', description: 'Settled outside Hyperline' },
+				],
+				default: 'transfer',
+			}, 'payment_method_type'),
+			bodyOption({
+				displayName: 'Provider ID',
+				name: 'providerId',
+				type: 'string',
+				default: '',
+				description: 'Needed when several accounts of the same payment provider are connected',
+			}, 'provider_id'),
+			bodyOption({
+				displayName: 'Provider Name',
+				name: 'providerName',
+				type: 'options',
+				options: [
+					{ name: 'Airwallex', value: 'airwallex' },
+					{ name: 'GoCardless', value: 'gocardless' },
+					{ name: 'Mollie', value: 'mollie' },
+					{ name: 'Stripe', value: 'stripe' },
+				],
+				default: 'stripe',
+				description: 'Payment provider that processed the transaction',
+			}, 'provider_name'),
+			bodyOption({
+				displayName: 'Provider Transaction ID',
+				name: 'providerTransactionId',
+				type: 'string',
+				default: '',
+				description:
+					'ID of the transaction at the provider. Hyperline refreshes pending transactions from the provider, which may override the amount and date.',
+			}, 'provider_transaction_id'),
+		],
+	},
+
+	// Delete Transaction
+	idParameter({
+		name: 'transactionId',
+		displayName: 'Transaction ID',
+		description: 'The scheduled transaction or wallet debit to delete',
+		displayOptions: show(['deleteTransaction']),
+	}),
+
+	// Upload PDF
+	{
+		...binaryInputProperty(show(['uploadPdf']), 'PDF'),
+		routing: { send: { preSend: [sendMultipartFile('file')] } },
 	},
 ];
