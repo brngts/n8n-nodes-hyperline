@@ -2,17 +2,41 @@ import type { INodeProperties } from 'n8n-workflow';
 import {
 	bodyOption,
 	byDisplayName,
+	jsonArrayBodyParameter,
 	jsonBodyProperty,
+	jsonParameter,
 	paginationProperties,
 	queryOption,
 	recordLocator,
 } from '../../shared/descriptions';
 import { operation, operationSelector } from '../../shared/operations';
 import { LANGUAGE_OPTIONS, PAYMENT_METHOD_OPTIONS } from '../../shared/options';
+import { dateQueryOption } from './dates';
 
 const RESOURCE = 'customer';
 
-const show = (operations: string[]) => ({ show: { resource: [RESOURCE], operation: operations } });
+const show = (operations: string[], extra: Record<string, string[]> = {}) => ({
+	show: { resource: [RESOURCE], operation: operations, ...extra },
+});
+
+const customerArrHistoryQueryParameters = ['occurred_at__gte', 'occurred_at__lte'];
+
+const CREATE_MANY_PLACEHOLDER = `[
+  {
+    "batch_customer_id": "1",
+    "name": "Acme Inc.",
+    "currency": "EUR",
+    "billing_email": "billing@acme.com"
+  }
+]`;
+
+const PROVIDER_MAPPINGS_PLACEHOLDER = `[
+  {
+    "customer_id": "cus_DKL4Xcb5VSa8CQ",
+    "provider_name": "stripe",
+    "provider_account_id": "cus_PqR7..."
+  }
+]`;
 
 export const customerGetManyQueryParameters = [
 	'search',
@@ -257,12 +281,29 @@ export const customerDescription: INodeProperties[] = [
 				url: '=/v1/customers/{{$parameter.customer}}/archive',
 			}),
 			operation({
+				name: 'Bulk Update Providers',
+				value: 'bulkUpdateProviders',
+				action: 'Bulk update customer provider mappings',
+				description:
+					'Link many customers to their records in a connected provider, with a result per customer',
+				method: 'POST',
+				url: '/v1/customers/providers-bulk-update',
+			}),
+			operation({
 				name: 'Create',
 				value: 'create',
 				action: 'Create a customer',
 				description: 'Create a customer',
 				method: 'POST',
 				url: '/v1/customers',
+			}),
+			operation({
+				name: 'Create Many',
+				value: 'createMany',
+				action: 'Create many customers',
+				description: 'Create up to 50 customers in one request, with a result per customer',
+				method: 'POST',
+				url: '/v1/customers/batch',
 			}),
 			operation({
 				name: 'Delete',
@@ -282,6 +323,15 @@ export const customerDescription: INodeProperties[] = [
 				url: '=/v2/customers/{{$parameter.customer}}',
 			}),
 			operation({
+				name: 'Get ARR History',
+				value: 'getArrHistory',
+				action: 'Get the ARR history of a customer',
+				description: 'List the ARR changes of each subscription of a customer, latest first',
+				method: 'GET',
+				url: '=/v1/customers/{{$parameter.customer}}/arr-history',
+				output: 'list',
+			}),
+			operation({
 				name: 'Get Many',
 				value: 'getAll',
 				action: 'Get many customers',
@@ -297,6 +347,40 @@ export const customerDescription: INodeProperties[] = [
 				description: 'Get the link to the self-service billing portal of a customer',
 				method: 'GET',
 				url: '=/v1/customers/{{$parameter.customer}}/portal',
+			}),
+			operation({
+				name: 'Get Shipping Destination',
+				value: 'getShippingDestination',
+				action: 'Get the shipping destination of a customer',
+				description: 'Get whether a customer ships to its billing or a shipping address, and that address',
+				method: 'GET',
+				url: '=/v1/customers/{{$parameter.customer}}/shipping',
+			}),
+			operation({
+				name: 'Get Tax Rates',
+				value: 'getTaxRates',
+				action: 'Get the tax rates of a customer',
+				description: 'Get the tax rates a customer is eligible for, based on its location and tax settings',
+				method: 'GET',
+				url: '=/v1/customers/{{$parameter.customer}}/taxes/rates',
+				output: 'list',
+			}),
+			operation({
+				name: 'Get Valuation',
+				value: 'getValuation',
+				action: 'Get the valuation of a customer',
+				description:
+					'Get the contract value, recurring contract value and ARR of the active subscriptions of a customer, by currency',
+				method: 'GET',
+				url: '=/v1/customers/{{$parameter.customer}}/valuation',
+			}),
+			operation({
+				name: 'Set Shipping Destination',
+				value: 'setShippingDestination',
+				action: 'Set the shipping destination of a customer',
+				description: 'Ship to the billing address or to a saved shipping address of a customer',
+				method: 'PUT',
+				url: '=/v1/customers/{{$parameter.customer}}/shipping',
 			}),
 			operation({
 				name: 'Unarchive',
@@ -323,7 +407,19 @@ export const customerDescription: INodeProperties[] = [
 		searchListMethod: 'getCustomers',
 		searchable: true,
 		idPrefix: 'cus_',
-		displayOptions: show(['archive', 'delete', 'get', 'getPortalUrl', 'unarchive', 'update']),
+		displayOptions: show([
+			'archive',
+			'delete',
+			'get',
+			'getArrHistory',
+			'getPortalUrl',
+			'getShippingDestination',
+			'getTaxRates',
+			'getValuation',
+			'setShippingDestination',
+			'unarchive',
+			'update',
+		]),
 	}),
 
 	// Create
@@ -367,6 +463,137 @@ export const customerDescription: INodeProperties[] = [
 		].sort(byDisplayName),
 	},
 	jsonBodyProperty(show(['update']), JSON_BODY_HINT, JSON_BODY_PLACEHOLDER),
+
+	// Create Many
+	jsonParameter({
+		displayName: 'Customers (JSON)',
+		name: 'customers',
+		property: 'customers',
+		shape: 'array',
+		required: true,
+		description:
+			'Up to 50 customers with the fields of Create, each with a batch_customer_id that is unique in the request and identifies it in the result',
+		placeholder: CREATE_MANY_PLACEHOLDER,
+		displayOptions: show(['createMany']),
+	}),
+
+	// Bulk Update Providers
+	jsonArrayBodyParameter({
+		displayName: 'Provider Mappings (JSON)',
+		name: 'providerMappings',
+		description:
+			'One entry per customer with customer_id, provider_name (such as stripe, hubspot or salesforce) and provider_account_id, the ID of the customer in the provider. A null provider_account_id removes the mapping. Add provider_id when several accounts of the same provider are connected.',
+		placeholder: PROVIDER_MAPPINGS_PLACEHOLDER,
+		displayOptions: show(['bulkUpdateProviders']),
+	}),
+	{
+		displayName: 'Options',
+		name: 'bulkUpdateOptions',
+		type: 'collection',
+		placeholder: 'Add Option',
+		default: {},
+		displayOptions: show(['bulkUpdateProviders']),
+		options: [
+			queryOption({
+				displayName: 'Sync',
+				name: 'sync',
+				type: 'boolean',
+				default: false,
+				description:
+					'Whether to sync the customers with the provider after the update. For payment providers this imports their payment methods.',
+			}),
+		],
+	},
+
+	// Get ARR History
+	...paginationProperties(show(['getArrHistory']), 'cursor', customerArrHistoryQueryParameters),
+	{
+		displayName: 'Filters',
+		name: 'arrHistoryFilters',
+		type: 'collection',
+		placeholder: 'Add Filter',
+		default: {},
+		displayOptions: show(['getArrHistory']),
+		options: [
+			dateQueryOption({
+				displayName: 'Occurred After',
+				name: 'occurredAfter',
+				default: '',
+				description: 'Return changes that happened at or after this date',
+			}, 'occurred_at__gte'),
+			dateQueryOption({
+				displayName: 'Occurred Before',
+				name: 'occurredBefore',
+				default: '',
+				description: 'Return changes that happened at or before this date',
+			}, 'occurred_at__lte'),
+		],
+	},
+
+	// Get Valuation
+	{
+		displayName: 'Options',
+		name: 'valuationOptions',
+		type: 'collection',
+		placeholder: 'Add Option',
+		default: {},
+		displayOptions: show(['getValuation']),
+		options: [
+			queryOption({
+				displayName: 'Granularity',
+				name: 'granularity',
+				type: 'options',
+				options: [
+					{ name: 'Month', value: 'month' },
+					{ name: 'Quarter', value: 'quarter' },
+					{ name: 'Year', value: 'year' },
+				],
+				default: 'month',
+				description: 'Adds a breakdown of the contract values by period',
+			}),
+		],
+	},
+
+	// Set Shipping Destination
+	{
+		displayName: 'Destination',
+		name: 'destination',
+		type: 'options',
+		required: true,
+		options: [
+			{
+				name: 'Billing Address',
+				value: 'billing_address',
+				description: 'Ship to the billing address of the customer',
+			},
+			{
+				name: 'Shipping Address',
+				value: 'shipping_address',
+				description: 'Ship to a saved shipping address of the customer',
+			},
+		],
+		default: 'shipping_address',
+		displayOptions: show(['setShippingDestination']),
+		routing: { send: { type: 'body', property: 'destination' } },
+	},
+	{
+		displayName: 'Options',
+		name: 'shippingOptions',
+		type: 'collection',
+		placeholder: 'Add Option',
+		default: {},
+		displayOptions: show(['setShippingDestination'], { destination: ['shipping_address'] }),
+		options: [
+			bodyOption({
+				displayName: 'Address ID',
+				name: 'addressId',
+				type: 'string',
+				default: '',
+				description:
+					'Saved shipping address to ship to. Defaults to the default shipping address of the customer.',
+			}, 'address_id'),
+		],
+	},
 
 	// Get Many
 	...paginationProperties(show(['getAll']), 'cursor', customerGetManyQueryParameters),
