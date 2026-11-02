@@ -14,7 +14,7 @@ import {
 	recordLocator,
 } from '../../shared/descriptions';
 import { UTC_DATE_TIME_VALUE } from '../../shared/dates';
-import { operation, operationSelector } from '../../shared/operations';
+import { DOWNLOAD_REQUEST, operation, operationSelector } from '../../shared/operations';
 import { LANGUAGE_OPTIONS, REFUND_METHOD_OPTIONS } from '../../shared/options';
 import { pdfToBinary } from '../../shared/postReceive';
 import { sendMultipartFile } from '../../shared/preSend';
@@ -174,11 +174,7 @@ export const invoiceDescription: INodeProperties[] = [
 				method: 'GET',
 				url: '=/v2/invoices/{{$parameter.invoice}}/download',
 				output: [pdfToBinary('invoice', 'invoice')],
-				request: {
-					encoding: 'arraybuffer',
-					json: false,
-					headers: { Accept: 'application/pdf' },
-				},
+				request: { ...DOWNLOAD_REQUEST, headers: { Accept: 'application/pdf' } },
 			}),
 			operation({
 				name: 'Get',

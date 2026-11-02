@@ -91,11 +91,7 @@ export const quoteDescription: INodeProperties[] = [
 				method: 'GET',
 				url: '=/v1/quotes/{{$parameter.quote}}/download',
 				output: [pdfToBinary('quote', 'quote')],
-				request: {
-					encoding: 'arraybuffer',
-					json: false,
-					headers: { Accept: 'application/pdf' },
-				},
+				request: { ...DOWNLOAD_REQUEST, headers: { Accept: 'application/pdf' } },
 			}),
 			operation({
 				name: 'Download File',

@@ -163,6 +163,18 @@ describe('Hyperline node description', () => {
 		}
 	});
 
+	it('never sends the API key along when a download redirects to another host', () => {
+		const downloads = resourceValues.flatMap((resource) =>
+			operationsFor(resource)
+				.filter((operation) => operation.routing?.request?.encoding === 'arraybuffer')
+				.map((operation) => ({ key: `${resource}.${String(operation.value)}`, request: operation.routing?.request })),
+		);
+		if (!onlyResources) expect(downloads.length).toBeGreaterThan(5);
+		for (const { key, request } of downloads) {
+			expect(request?.sendCredentialsOnCrossOriginRedirect, key).toBe(false);
+		}
+	});
+
 	it('only puts parameters in URLs that the operation shows', () => {
 		const problems: string[] = [];
 		for (const resource of resourceValues) {

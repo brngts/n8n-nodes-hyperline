@@ -67,12 +67,16 @@ export function operation({
 
 /**
  * Request settings for file downloads: the body is kept as raw bytes and
- * Hyperline's redirects to the stored file are followed. Pair with `binaryDownload`.
+ * Hyperline's redirects to the stored file are followed. The API key is only
+ * sent along when the redirect stays on the same origin, so it never reaches
+ * the storage host (signed storage URLs also reject a second credential).
+ * Pair with `binaryDownload`, or spread it and override `headers`.
  */
 export const DOWNLOAD_REQUEST = {
 	encoding: 'arraybuffer',
 	json: false,
 	headers: { Accept: '*/*' },
+	sendCredentialsOnCrossOriginRedirect: false,
 } as const;
 
 /** The "Operation" dropdown for a resource. */
