@@ -1,24 +1,27 @@
 import type { INodeProperties, INodePropertyOptions } from 'n8n-workflow';
 import { describe, expect, it } from 'vitest';
 import { Hyperline } from '../nodes/Hyperline/Hyperline.node';
-import { customerGetManyQueryParameters } from '../nodes/Hyperline/resources/customer';
-import { invoiceGetManyQueryParameters } from '../nodes/Hyperline/resources/invoice';
-import { productGetManyQueryParameters } from '../nodes/Hyperline/resources/product';
-import { quoteGetManyQueryParameters } from '../nodes/Hyperline/resources/quote';
-import { subscriptionGetManyQueryParameters } from '../nodes/Hyperline/resources/subscription';
 import hyperlinePaths from './fixtures/hyperline-paths.json';
 
 const node = new Hyperline();
 const { properties } = node.description;
 
+/**
+ * `HYPERLINE_RESOURCES=coupon,taxRate npx vitest run` limits the per-resource
+ * checks to those resources, which helps while other resources are in progress.
+ */
+// eslint-disable-next-line @n8n/community-nodes/no-restricted-globals -- test-only filter, not shipped in the package
+const onlyResources = process.env.HYPERLINE_RESOURCES?.split(',').map((value) => value.trim());
+const inScope = (resource: unknown) => !onlyResources || onlyResources.includes(String(resource));
+const scopedProperties = properties.filter(
+	(property) =>
+		property.name === 'resource' ||
+		!property.displayOptions?.show?.resource ||
+		property.displayOptions.show.resource.some(inScope),
+);
+
 type DocumentedEndpoints = Record<string, Record<string, { query: string[]; body: string[] }>>;
 const documented: DocumentedEndpoints = hyperlinePaths;
-
-/** Body fields that preSend functions add, which `routing.send.property` cannot show. */
-const PRE_SEND_BODY_FIELDS: Record<string, string[]> = {
-	'invoice.create': ['line_items'],
-	'billableEvent.send': ['record'],
-};
 
 function isOption(option: unknown): option is INodePropertyOptions {
 	return typeof option === 'object' && option !== null && 'value' in option;
@@ -32,24 +35,36 @@ function operationsFor(resource: string) {
 	return (operation?.options ?? []).filter(isOption);
 }
 
-/** Matches a routed URL such as `=/v1/customers/{{$parameter.customer}}` to its spec path. */
+/**
+ * Matches a routed URL such as `=/v1/customers/{{$parameter.customer}}` to its
+ * spec path. When several paths match (`/v1/customers/segments` also fits
+ * `/v1/customers/{id}`), the one with the most literal segments wins.
+ */
 function specPathFor(url: string): string | undefined {
 	const concrete = url.replace(/^=/, '').replace(/\{\{[^}]+\}\}/g, ':id');
-	return Object.keys(documented).find((path) => {
-		const pattern = new RegExp(`^${path.replace(/\{[^}]+\}/g, '[^/]+')}$`);
-		return pattern.test(concrete);
-	});
+	const literalSegments = (path: string) =>
+		path.split('/').filter((segment) => segment !== '' && !segment.startsWith('{')).length;
+	return Object.keys(documented)
+		.filter((path) => new RegExp(`^${path.replace(/\{[^}]+\}/g, '[^/]+')}$`).test(concrete))
+		.sort((a, b) => literalSegments(b) - literalSegments(a))[0];
 }
 
 type SentParameter = { type: 'query' | 'body'; property: string };
 
-/** Collects `routing.send` declarations, including those nested in collections. */
+/**
+ * Collects `routing.send` declarations, including those nested in collections,
+ * and the body fields preSend functions declare through `bodyProperties`.
+ */
 function sendsIn(property: INodeProperties): SentParameter[] {
 	const send = property.routing?.send;
 	const own: SentParameter[] =
 		(send?.type === 'query' || send?.type === 'body') && send.property
 			? [{ type: send.type, property: send.property }]
 			: [];
+	for (const preSend of send?.preSend ?? []) {
+		const bodyProperties = (preSend as { bodyProperties?: string[] }).bodyProperties ?? [];
+		own.push(...bodyProperties.map((bodyProperty) => ({ type: 'body' as const, property: bodyProperty })));
+	}
 
 	const nested = (property.options ?? []).flatMap((option) => {
 		if (typeof option !== 'object' || option === null) return [];
@@ -80,29 +95,30 @@ function parametersSentBy(resource: string, operation: INodePropertyOptions): Se
 		})
 		.flatMap(sendsIn);
 
-	const fromPreSend = (PRE_SEND_BODY_FIELDS[`${resource}.${String(operation.value)}`] ?? []).map(
-		(property) => ({ type: 'body' as const, property }),
-	);
-
-	return [...fromOperation, ...fromFields, ...fromPreSend];
+	return [...fromOperation, ...fromFields];
 }
 
-function queryPropertiesIn(collection: INodeProperties | undefined): string[] {
-	return (collection?.options ?? [])
-		.filter((option): option is INodeProperties => 'type' in option)
-		.flatMap((option) => {
-			const send = option.routing?.send;
-			return send?.type === 'query' && send.property ? [send.property] : [];
-		});
+/** Query parameters a paginated operation repeats on follow-up pages. */
+function carriedOverQuery(resource: string, operation: INodePropertyOptions): string[] | undefined {
+	const returnAll = properties.find(
+		(property) =>
+			property.name === 'returnAll' &&
+			property.displayOptions?.show?.resource?.includes(resource) &&
+			property.displayOptions?.show?.operation?.includes(operation.value),
+	);
+	const pagination = returnAll?.routing?.operations?.pagination;
+	if (!pagination || typeof pagination === 'function' || pagination.type !== 'generic') return undefined;
+	return Object.keys(pagination.properties.request.qs ?? {});
 }
 
 describe('Hyperline node description', () => {
-	const resourceValues = (properties.find((property) => property.name === 'resource')?.options ?? [])
+	const allResourceValues = (properties.find((property) => property.name === 'resource')?.options ?? [])
 		.filter(isOption)
 		.map((option) => String(option.value));
+	const resourceValues = allResourceValues.filter(inScope);
 
 	it('has an operation list with routing for every resource', () => {
-		expect(resourceValues.length).toBe(6);
+		expect(allResourceValues.length).toBe(37);
 		for (const resource of resourceValues) {
 			const operations = operationsFor(resource);
 			expect(operations.length, resource).toBeGreaterThan(0);
@@ -117,11 +133,11 @@ describe('Hyperline node description', () => {
 	});
 
 	it('only shows parameters for resources and operations that exist', () => {
-		for (const property of properties) {
+		for (const property of scopedProperties) {
 			const show = property.displayOptions?.show;
 			if (!show) continue;
 			for (const resource of show.resource ?? []) {
-				expect(resourceValues, property.name).toContain(resource);
+				expect(allResourceValues, property.name).toContain(resource);
 				for (const operation of show.operation ?? []) {
 					expect(
 						operationsFor(String(resource)).map((option) => option.value),
@@ -169,29 +185,26 @@ describe('Hyperline node description', () => {
 		}
 		expect(problems).toEqual([]);
 		// Guards against the collector walking past every field and reporting a clean run.
-		expect(checked).toBeGreaterThan(100);
+		if (!onlyResources) expect(checked).toBeGreaterThan(100);
 	});
 
 	it('repeats every filter query parameter during pagination', () => {
-		const cases = [
-			{ resource: 'customer', expected: customerGetManyQueryParameters },
-			{ resource: 'invoice', expected: invoiceGetManyQueryParameters },
-			{ resource: 'product', expected: productGetManyQueryParameters },
-			{ resource: 'quote', expected: quoteGetManyQueryParameters },
-			{ resource: 'subscription', expected: subscriptionGetManyQueryParameters },
-		];
-		for (const { resource, expected } of cases) {
-			const collections = properties.filter(
-				(property) =>
-					(property.name === 'filters' || property.name === 'options') &&
-					property.displayOptions?.show?.resource?.includes(resource) &&
-					property.displayOptions?.show?.operation?.includes('getAll'),
-			);
-			expect(collections.length, resource).toBeGreaterThan(0);
-			for (const parameter of collections.flatMap(queryPropertiesIn)) {
-				expect(expected, `${resource} pagination misses ${parameter}`).toContain(parameter);
+		const problems: string[] = [];
+		let paginated = 0;
+		for (const resource of resourceValues) {
+			for (const operation of operationsFor(resource)) {
+				const carried = carriedOverQuery(resource, operation);
+				if (!carried) continue;
+				paginated += 1;
+				for (const { type, property } of parametersSentBy(resource, operation)) {
+					if (type === 'query' && !carried.includes(property)) {
+						problems.push(`${resource}.${String(operation.value)} pagination misses ${property}`);
+					}
+				}
 			}
 		}
+		expect(problems).toEqual([]);
+		if (!onlyResources) expect(paginated).toBeGreaterThan(5);
 	});
 
 	it('keeps collection entries and options in alphabetical order', () => {
@@ -200,7 +213,7 @@ describe('Hyperline node description', () => {
 			const sorted = [...names].sort((a, b) => a.localeCompare(b));
 			if (names.join('|') !== sorted.join('|')) unsorted.push(where);
 		};
-		for (const property of properties) {
+		for (const property of scopedProperties) {
 			if (property.type === 'collection') {
 				check(
 					(property.options ?? []).map((option) => ('displayName' in option ? option.displayName : '')),
@@ -223,13 +236,13 @@ describe('Hyperline node description', () => {
 				else if ('type' in option) collect(option);
 			}
 		};
-		properties.forEach(collect);
+		scopedProperties.forEach(collect);
 		const wrong = texts.filter((text) => /\ba [aeio]/i.test(text) || /\ban [^aeiou]/i.test(text));
 		expect(wrong).toEqual([]);
 	});
 
 	it('registers every list search method it references', () => {
-		const methods = properties.flatMap((property) =>
+		const methods = scopedProperties.flatMap((property) =>
 			(property.modes ?? []).flatMap((mode) => {
 				const method = mode.typeOptions?.searchListMethod;
 				return method ? [method] : [];

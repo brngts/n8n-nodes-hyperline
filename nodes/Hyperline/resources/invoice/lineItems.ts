@@ -1,4 +1,5 @@
 import type { IDataObject, IExecuteSingleFunctions, IHttpRequestOptions } from 'n8n-workflow';
+import { withBodyProperties } from '../../shared/preSend';
 
 type LineItemInput = {
 	name?: string;
@@ -36,7 +37,7 @@ export function toLineItem(input: LineItemInput): IDataObject {
  * Sends the "Line Items" rows as `line_items`. When no rows are set, the body
  * is left alone so line items can come from the JSON field instead.
  */
-export async function sendLineItems(
+async function sendLineItemRows(
 	this: IExecuteSingleFunctions,
 	requestOptions: IHttpRequestOptions,
 ): Promise<IHttpRequestOptions> {
@@ -48,3 +49,5 @@ export async function sendLineItems(
 	};
 	return requestOptions;
 }
+
+export const sendLineItems = withBodyProperties(sendLineItemRows, ['line_items']);

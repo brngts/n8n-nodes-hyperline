@@ -4,7 +4,7 @@ import type {
 	INodePropertyOptions,
 	PostReceiveAction,
 } from 'n8n-workflow';
-import { handleHyperlineError, returnSuccess } from './postReceive';
+import { handleHyperlineError, returnSuccess, splitArrayResponse, unwrapList } from './postReceive';
 
 type OperationOptions = {
 	name: string;
@@ -13,7 +13,12 @@ type OperationOptions = {
 	description: string;
 	method: IHttpRequestMethods;
 	url: string;
-	/** `list` unwraps the `data` array of a list response into one item per record. */
+	/**
+	 * `record` returns the response as is (a bare array becomes one item per entry),
+	 * `list` returns one item per record of a list response, and `success` returns
+	 * `{ success: true }` for empty responses. Pass actions for anything else, such
+	 * as `binaryDownload`.
+	 */
 	output?: 'record' | 'list' | 'success' | PostReceiveAction[];
 	request?: Record<string, unknown>;
 };
@@ -34,14 +39,11 @@ export function operation({
 }: OperationOptions): INodePropertyOptions {
 	let postReceive: PostReceiveAction[];
 	if (output === 'list') {
-		postReceive = [
-			handleHyperlineError,
-			{ type: 'rootProperty', properties: { property: 'data' } },
-		];
+		postReceive = [handleHyperlineError, unwrapList];
 	} else if (output === 'success') {
 		postReceive = [handleHyperlineError, returnSuccess];
 	} else if (output === 'record') {
-		postReceive = [handleHyperlineError];
+		postReceive = [handleHyperlineError, splitArrayResponse];
 	} else {
 		postReceive = [handleHyperlineError, ...output];
 	}
@@ -62,6 +64,16 @@ export function operation({
 		},
 	};
 }
+
+/**
+ * Request settings for file downloads: the body is kept as raw bytes and
+ * Hyperline's redirects to the stored file are followed. Pair with `binaryDownload`.
+ */
+export const DOWNLOAD_REQUEST = {
+	encoding: 'arraybuffer',
+	json: false,
+	headers: { Accept: '*/*' },
+} as const;
 
 /** The "Operation" dropdown for a resource. */
 export function operationSelector(
